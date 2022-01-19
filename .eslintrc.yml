@@ -8,9 +8,7 @@ parserOptions:
   ecmaVersion: latest
   sourceType: module
 rules:  {
-	"no-console": "off",
-	"import/extensions": 0,
-	no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
-	"no-tabs": 0,
   'indent': 'off',
+  no-console: 0,
+  import/extensions: 0,
 }

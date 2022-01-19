@@ -1,14 +1,15 @@
 env:
+  browser: true
   es2021: true
   node: true
 extends:
   - airbnb-base
 parserOptions:
-  ecmaVersion: 12
+  ecmaVersion: latest
   sourceType: module
-rules: {
-        "no-console": "off",
-        "import/extensions": 0,
-        no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
-        "no-tabs": 0
+rules:  {
+	"no-console": "off",
+	"import/extensions": 0,
+	no-underscore-dangle: [2, { "allow": ["__filename", "__dirname"] }],
+	"no-tabs": 0
 }

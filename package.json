@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "description": "[![Actions Status](https://github.com/hellion86/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/hellion86/frontend-project-lvl3/actions)",
   "main": "index.js",
-  "type": "module",
   "scripts": {
     "test": "npx jest --bail",
     "build": "webpack --mode=production --node-env=production",

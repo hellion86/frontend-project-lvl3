@@ -8,8 +8,8 @@ parserOptions:
   ecmaVersion: latest
   sourceType: module
 rules:  {
-  'indent': 'off',
+  indent: 0,
   no-console: 0,
   import/extensions: 0,
-  allowIndentationTabs: true,
+  no-tabs: ["error", { allowIndentationTabs: true }],
 }

@@ -1,4 +1,4 @@
-import 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const but1 = document.querySelector('.btn-secondary');
 

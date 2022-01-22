@@ -32,7 +32,26 @@ const config = {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset',
       },
-
+	  {
+		test: /\.css$/,
+		use: [
+		  'style-loader',
+		  'css-loader',
+		]
+	  },
+	//   {
+	//  	test: /\.(scss)$/,
+	//   	use: [{
+	// 	// inject CSS to page
+	// 		loader: 'style-loader'
+	//   	}, {
+	// 	// translates CSS into CommonJS modules
+	// 		loader: 'css-loader'
+	//   	}, {
+	// 	// compiles Sass to CSS
+	// 		loader: 'sass-loader'
+	//   	}]
+	// 	},
       // Add your rules for custom modules here
       // Learn more about loaders from https://webpack.js.org/loaders/
     ],

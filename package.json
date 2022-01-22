@@ -4,6 +4,7 @@
   "description": "[![Actions Status](https://github.com/hellion86/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/hellion86/frontend-project-lvl3/actions)",
   "main": "src/index.js",
   "scripts": {
+		"build": "webpack --mode=production --node-env=production",
     "test": "npx jest --bail",
     "dev": "webpack --mode=development",
     "prod": "webpack --mode=production --node-env=production",

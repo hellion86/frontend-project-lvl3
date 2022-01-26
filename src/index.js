@@ -4,7 +4,7 @@ import onChange from 'on-change';
 //import { validate } from 'schema-utils';
 import * as yup from 'yup';
 //import has from 'lodash/has.js';
-//import stateWatcher from './view.js';
+import { handleErrors, validAsync } from './view.js';
 
 // const watcher = onChange(state, (path, value) => {
 // 	if (path === 'urlForm.loadedUrl') {
@@ -52,39 +52,33 @@ import * as yup from 'yup';
 //   }
 // };
 
-const validAsync = (url) => {
-	const schema = yup.object({ url: yup.string().url().notOneOf(url.loadedUrl)});
-	return schema.validate(url, { abortEarly: false }).then(() => {}).catch((err) => {
-		return keyBy(err.inner, 'path');
-	});
-}
 
-const handleErrors = (elements, value, prev) => {
-	// console.log('errors handle!');
-	// console.log('elements :');
-	// console.log(elements.dangerZone.textContent);
-	// console.log('value');
-	// console.log(value);
-	// console.log(value.url.message);
-	// console.log('prev');
-	// console.log(prev);
-	// const urlWasBad = isEmpty(prev);
-	const errorsType = {
-		url: 'Ссылка должна быть валидным URL',
-		notOneOf: 'Rss уже существует',
-	};
+// const handleErrors = (elements, value, prev) => {
+// 	// console.log('errors handle!');
+// 	// console.log('elements :');
+// 	// console.log(elements.dangerZone.textContent);
+// 	// console.log('value');
+// 	// console.log(value);
+// 	// console.log(value.url.message);
+// 	// console.log('prev');
+// 	// console.log(prev);
+// 	// const urlWasBad = isEmpty(prev);
+// 	const errorsType = {
+// 		url: 'Ссылка должна быть валидным URL',
+// 		notOneOf: 'Rss уже существует',
+// 	};
 	
-	const urlIsBad = isEmpty(value);
-	if (!urlIsBad) {
-		elements.dangerZone.textContent = errorsType[value];
-		elements.mainFormUrlInput.classList.add('is-invalid');
-	} else {
-		elements.mainForm.reset();
-		elements.mainFormUrlInput.focus();
-		elements.dangerZone.textContent = '';
-		elements.mainFormUrlInput.classList.remove('is-invalid');
-	}
-};
+// 	const urlIsBad = isEmpty(value);
+// 	if (!urlIsBad) {
+// 		elements.dangerZone.textContent = errorsType[value];
+// 		elements.mainFormUrlInput.classList.add('is-invalid');
+// 	} else {
+// 		elements.mainForm.reset();
+// 		elements.mainFormUrlInput.focus();
+// 		elements.dangerZone.textContent = '';
+// 		elements.mainFormUrlInput.classList.remove('is-invalid');
+// 	}
+// };
 
 const render = (elements) => (path, value, prev) => {
 	switch (path) {

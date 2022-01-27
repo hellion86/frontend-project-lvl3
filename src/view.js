@@ -1,17 +1,30 @@
 import { isEmpty, keyBy } from 'lodash';
 import onChange from 'on-change';
 import * as yup from 'yup';
+import { setLocale } from 'yup';
 
-export const validAsync = (url) => {
-	const schema = yup.object({ url: yup.string().url().notOneOf(url.loadedUrl)});
-	return schema.validate(url, { abortEarly: false }).then(() => {}).catch((err) => keyBy(err.inner, 'path'));
+export const validAsync = (url, i18nextInstance) => {
+	setLocale({
+		string: {
+			url: i18nextInstance.t('urlError')
+		},
+		mixed: {
+			notOneOf: i18nextInstance.t('urlExist')
+		},
+		//success: i18nextInstance.t('urlLoadSuccess')
+	})
+	
+	//.notOneOf(url.loadedUrl) 
+	const schema = yup.object({ 
+		url: yup.string().url(),
+		checkLoadedUrl: yup.mixed().notOneOf(url.loadedUrl)
+	});
+	return schema.validate(url, { abortEarly: false }).then(() => {}).catch((err) => keyBy(err.inner, 'type'));
 }
 
-
+ 
 // export default (state, elements) => {
 // 	const schema = yup.object({ url: yup.string().url() });
-
-
 // 	return onChange(state, () => {
 // 		schema.validate(state.urlForm).then(() => {
 // 			state.urlForm.valid = true;
@@ -31,30 +44,43 @@ export const validAsync = (url) => {
 // schema.isValid(42)       //=> true
 // schema.isValid('jimmy')  //=> true
 // schema.isValid(new Date) //=> false
-export const handleErrors = (elements, value, prev) => {
+export const handleErrors = (elements, value, i18nextInstance) => {
 	// console.log('errors handle!');
 	// console.log('elements :');
 	// console.log(elements.dangerZone.textContent);
 	// console.log('value');
 	// console.log(value);
-	// console.log(value.url.message);
+	//console.log(value);
 	// console.log('prev');
 	// console.log(prev);
 	// const urlWasBad = isEmpty(prev);
-	const errorsType = {
-		url: 'Ссылка должна быть валидным URL',
-		notOneOf: 'Rss уже существует',
-	};
+
+	
+
+
+	////------------
+	// const errorsType = {
+	// 	url: i18nextInstance.t('urlError'),
+	// 	notOneOf: i18nextInstance.t('urlExist'),
+	// 	success: i18nextInstance.t('urlLoadSuccess'),
+	// };
 	
 	const urlIsBad = isEmpty(value);
+	
 	if (!urlIsBad) {
-		elements.dangerZone.textContent = errorsType[value];
-		elements.mainFormUrlInput.classList.add('is-invalid');
+		console.log(value);
+		// elements.dangerZone.textContent = errorsType[value];
+		// elements.dangerZone.classList.add('text-danger');
+		// elements.mainFormUrlInput.classList.add('is-invalid');
+		// elements.dangerZone.classList.remove('text-success');
 	} else {
-		elements.mainForm.reset();
-		elements.mainFormUrlInput.focus();
-		elements.dangerZone.textContent = '';
-		elements.mainFormUrlInput.classList.remove('is-invalid');
+		console.log(i18nextInstance.t('urlLoadSuccess'))
+		// elements.mainForm.reset();
+		// elements.mainFormUrlInput.focus();
+		// elements.dangerZone.textContent = errorsType['success'];
+		// elements.dangerZone.classList.add('text-success');
+		// elements.dangerZone.classList.remove('text-danger');
+		// elements.mainFormUrlInput.classList.remove('is-invalid');
 	}
 };
 

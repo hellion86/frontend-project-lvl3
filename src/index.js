@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { isEmpty, keyBy } from 'lodash';
 import onChange from 'on-change';
-//import { validate } from 'schema-utils';
-import * as yup from 'yup';
-//import has from 'lodash/has.js';
+import { isEmpty } from 'lodash';
 import { handleErrors, validAsync } from './view.js';
+import i18n from 'i18next';
+import ru from './locales/ru.js';
+import en from './locales/en.js';
 
 // const watcher = onChange(state, (path, value) => {
 // 	if (path === 'urlForm.loadedUrl') {
@@ -80,10 +80,10 @@ import { handleErrors, validAsync } from './view.js';
 // 	}
 // };
 
-const render = (elements) => (path, value, prev) => {
+const render = (elements, i18nextInstance) => (path, value, prev) => {
 	switch (path) {
 		case 'urlForm.errors':
- 			handleErrors(elements, value, prev);
+ 			handleErrors(elements, value, i18nextInstance);
 			break;
 		case 'urlForm.validUrl':
 			break;
@@ -92,7 +92,8 @@ const render = (elements) => (path, value, prev) => {
 	}
 };
 
-const app = () => {
+const app = (i18nextInstance) => {
+	
 	const elements = {
 		mainForm: document.querySelector('form'),
 		dangerZone: document.querySelector('.feedback'),
@@ -105,22 +106,28 @@ const app = () => {
 			loadedUrl: [],
 			validUrl:'',
 			url: '',
+			checkLoadedUrl: '',
 			errors: {},
 		},
-	}, render(elements));
+	}, render(elements, i18nextInstance));
 
 	elements.mainForm.addEventListener('submit', (e) => {
 		e.preventDefault();
 		const formData = new FormData(e.target);
 		const getUrl = formData.get('url');
 		state.urlForm.url = getUrl;
-		validAsync(state.urlForm)
+		state.urlForm.checkLoadedUrl = getUrl;
+		// console.log(i18nextInstance);
+		// console.log(i18nextInstance.t('resButton'));
+		validAsync(state.urlForm, i18nextInstance)
 			.then((errors) => {
 				if (isEmpty(errors)) {
 					state.urlForm.loadedUrl.push(getUrl);
+					//при успехе передавать например {url: 'load success'} и обрабатывать в хендлере
 					state.urlForm.errors = {};
 				} else {
-					state.urlForm.errors = errors.url.type;
+					// передавать не тип ошибки а всю ошибку в handlerrors. И уже там разматывать её и использовать локализацию для слов которые будут подставляться
+					state.urlForm.errors = errors;
 				}
 			});
 		//	const errors= validateUrl(state.urlForm);			
@@ -138,11 +145,28 @@ const app = () => {
 		// 	state.urlForm.errors = errors.url.type;		
 		// }
 
-
+		
 		//console.log(state.urlForm);
 		//console.log(state.urlForm);
 		//watcher.urlForm.loadedUrl.push(getUrl);
 	});
 };
 
-app();
+ 
+const runApp = () => {
+	const i18nextInstance = i18n.createInstance();
+	i18nextInstance.init({
+		lng: 'ru',
+		resources: { en, ru	}
+	}).then(() => app(i18nextInstance));
+};
+
+runApp();
+
+
+// const i18nextInstance = i18n.createInstance();
+// await i18nextInstance.init({
+//   lng: 'en',
+//   resources,
+// });
+// app(i18nextInstance);

@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import onChange from 'on-change';
 import { isEmpty } from 'lodash';
 import i18n from 'i18next';
-import { validAsync, render } from './view.js';
+import { validAsync, render, loadFeeds } from './view.js';
 import ru from './locales/ru.js';
 
 const app = (i18nextInstance) => {
@@ -10,7 +10,7 @@ const app = (i18nextInstance) => {
 		mainForm: document.querySelector('form'),
 		dangerZone: document.querySelector('.feedback'),
 		mainFormUrlInput: document.querySelector('#url-input'),
-		addFeedButton: document.querySelector('button'),
+		addFeedButton: document.querySelector('[aria-label="add"]'),
 	};
 
 	const state = onChange({
@@ -21,6 +21,7 @@ const app = (i18nextInstance) => {
 			checkLoadedUrl: '',
 			errors: {},
 		},
+		feeds: {},
 	}, render(elements, i18nextInstance));
 
 	elements.mainForm.addEventListener('submit', (e) => {
@@ -32,7 +33,7 @@ const app = (i18nextInstance) => {
 		validAsync(state.urlForm, i18nextInstance)
 			.then((errors) => {
 				if (isEmpty(errors)) {
-					state.urlForm.loadedUrl.push(getUrl);
+					loadFeeds(state, getUrl, elements, i18nextInstance);
 				} else {
 					state.urlForm.errors = errors.ValidationError.message;
 				}

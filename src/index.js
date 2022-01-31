@@ -1,8 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import onChange from 'on-change';
-import { isEmpty } from 'lodash';
+import { uniqueId } from 'lodash';
 import i18n from 'i18next';
-import { validAsync, render, loadFeeds } from './view.js';
+import {
+	validAsync, render, loadUrl, parserUrl,
+} from './view.js';
 import ru from './locales/ru.js';
 
 const app = (i18nextInstance) => {
@@ -21,7 +23,8 @@ const app = (i18nextInstance) => {
 			checkLoadedUrl: '',
 			errors: {},
 		},
-		feeds: {},
+		feeds: [],
+		posts: [],
 	}, render(elements, i18nextInstance));
 
 	elements.mainForm.addEventListener('submit', (e) => {
@@ -30,15 +33,38 @@ const app = (i18nextInstance) => {
 		const getUrl = formData.get('url');
 		state.urlForm.url = getUrl;
 		state.urlForm.checkLoadedUrl = getUrl;
+		elements.addFeedButton.setAttribute('disabled', true);
 		validAsync(state.urlForm, i18nextInstance)
-			.then((errors) => {
-				if (isEmpty(errors)) {
-					loadFeeds(state, getUrl, elements, i18nextInstance);
-				} else {
-					state.urlForm.errors = errors.ValidationError.message;
-				}
-			});
-		});
+			.then(() => loadUrl(getUrl))
+			.then((rss) => {
+				const dataFeed = parserUrl(rss);
+				if (dataFeed.querySelector('parsererror')) {
+					state.urlForm.errors = i18nextInstance.t('badRss');
+					} else {
+						state.urlForm.loadedUrl.push(getUrl);
+						state.urlForm.errors = '';
+
+						const feed = {
+							id: uniqueId(),
+							title: dataFeed.querySelector('title').textContent,
+							descripton: dataFeed.querySelector('description').textContent,
+						};
+						state.feeds.push(feed);
+						dataFeed.querySelectorAll('item').forEach((post) => {
+							state.posts.push({
+								id: uniqueId(),
+								idFeed: feed.id,
+								title: post.querySelector('title').textContent,
+								descripton: post.querySelector('description').textContent,
+								link: post.querySelector('link').textContent,
+							});
+						});
+					}
+					console.log(state);
+				})
+			.catch((error) => { state.urlForm.errors = error.message; })
+			.then(() => { elements.addFeedButton.disabled = false; });
+	});
 	};
 
 const runApp = () => {

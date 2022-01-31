@@ -13,6 +13,8 @@ const app = (i18nextInstance) => {
 		dangerZone: document.querySelector('.feedback'),
 		mainFormUrlInput: document.querySelector('#url-input'),
 		addFeedButton: document.querySelector('[aria-label="add"]'),
+		postPlace: document.querySelector('.posts'),
+		feedsPlace: document.querySelector('.feeds'),
 	};
 
 	const state = onChange({
@@ -24,7 +26,6 @@ const app = (i18nextInstance) => {
 			errors: {},
 		},
 		feeds: [],
-		posts: [],
 	}, render(elements, i18nextInstance));
 
 	elements.mainForm.addEventListener('submit', (e) => {
@@ -43,24 +44,23 @@ const app = (i18nextInstance) => {
 					} else {
 						state.urlForm.loadedUrl.push(getUrl);
 						state.urlForm.errors = '';
-
-						const feed = {
+						const post = {
 							id: uniqueId(),
 							title: dataFeed.querySelector('title').textContent,
-							descripton: dataFeed.querySelector('description').textContent,
+							description: dataFeed.querySelector('description').textContent,
 						};
-						state.feeds.push(feed);
-						dataFeed.querySelectorAll('item').forEach((post) => {
-							state.posts.push({
+						const feeds = [];
+						dataFeed.querySelectorAll('item').forEach((feed) => {
+							feeds.push({
 								id: uniqueId(),
-								idFeed: feed.id,
-								title: post.querySelector('title').textContent,
-								descripton: post.querySelector('description').textContent,
-								link: post.querySelector('link').textContent,
+								idFeed: post.id,
+								title: feed.querySelector('title').textContent,
+								description: feed.querySelector('description').textContent,
+								link: feed.querySelector('link').textContent,
 							});
 						});
+						state.feeds.push({ post, feeds });
 					}
-					console.log(state);
 				})
 			.catch((error) => { state.urlForm.errors = error.message; })
 			.then(() => { elements.addFeedButton.disabled = false; });

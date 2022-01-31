@@ -26,8 +26,7 @@ export const parserUrl = (url) => {
 };
 
 export const handleErrors = (elements, value, i18nextInstance) => {
-	const urlIsBad = isEmpty(value);
-	if (!urlIsBad) {
+	if (!isEmpty(value)) {
 		if (value === 'Network Error') {
 			elements.dangerZone.textContent = i18nextInstance.t('netWorkError');
 		} else {
@@ -48,14 +47,44 @@ export const handleErrors = (elements, value, i18nextInstance) => {
 
 export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
+const renderFeed = (elements, value) => {
+	//console.log(value[0].feeds)
+	const preparePostsLi = value.map((item) => (
+		`<li class="list-group-item border-0 border-end-0">
+		<h3 class="h6 m-0">${item.post.title}</h3>
+		<p class="m-0 small text-black-50">${item.post.description}</p>
+		</li>`
+	)).join('');
+	const postsTemplate = `<div class="card border-0"><div class="card-body">
+	<h2 class="card-title h4">Фиды</h2></div><ul class="list-group border-0 rounded-0">${preparePostsLi}</ul></div>`;
+	elements.feedsPlace.innerHTML = postsTemplate;
+	const prepareFeedsLi = value.map((item) => (
+		item.feeds.map((el) => (
+			`<li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
+			<a href="${el.link}" class="fw-bold" data-id="${el.id}" target="_blank" rel="noopener noreferrer">${el.title}</a>
+			</li>`
+		)).join('')
+	));
+
+
+	// <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
+	//   <a href="https://ru.hexlet.io/courses/python-basics/lessons/stdlib/theory_unit" class="fw-bold" data-id="2" target="_blank" rel="noopener noreferrer">Стандартная билиотека / Python: Основы программирования</a>
+	//   <button type="button" class="btn btn-outline-primary btn-sm" data-id="2" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button>
+	// </li>
+
+	const feedsTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div>
+  	<ul class="list-group border-0 rounded-0">${prepareFeedsLi}</ul></div>`;
+	elements.postsPlace.innerHTML = feedsTemplate;
+};
+
 export const render = (elements, i18nextInstance) => (path, value) => {
 	switch (path) {
 		case 'urlForm.errors':
 			handleErrors(elements, value, i18nextInstance);
 			break;
-		//case 'urlForm.loadedUrl':
-			//handleProcessLoading(elements, value, i18nextInstance);
-			//break;
+		case 'feeds':
+			renderFeed(elements, value);
+			break;
 		default:
 			break;
 	}

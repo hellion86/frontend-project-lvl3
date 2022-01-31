@@ -1,10 +1,10 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import onChange from 'on-change';
-import { uniqueId } from 'lodash';
 import i18n from 'i18next';
 import {
 	validAsync, render, loadUrl, parserUrl,
 } from './view.js';
+import { makePosts, makeFeeds } from './utils.js';
 import ru from './locales/ru.js';
 
 const app = (i18nextInstance) => {
@@ -13,7 +13,7 @@ const app = (i18nextInstance) => {
 		dangerZone: document.querySelector('.feedback'),
 		mainFormUrlInput: document.querySelector('#url-input'),
 		addFeedButton: document.querySelector('[aria-label="add"]'),
-		postPlace: document.querySelector('.posts'),
+		postsPlace: document.querySelector('.posts'),
 		feedsPlace: document.querySelector('.feeds'),
 	};
 
@@ -26,6 +26,7 @@ const app = (i18nextInstance) => {
 			errors: {},
 		},
 		feeds: [],
+		posts: [],
 	}, render(elements, i18nextInstance));
 
 	elements.mainForm.addEventListener('submit', (e) => {
@@ -36,30 +37,17 @@ const app = (i18nextInstance) => {
 		state.urlForm.checkLoadedUrl = getUrl;
 		elements.addFeedButton.setAttribute('disabled', true);
 		validAsync(state.urlForm, i18nextInstance)
-			.then(() => loadUrl(getUrl))
+			.then((data) => loadUrl(data.url))
 			.then((rss) => {
 				const dataFeed = parserUrl(rss);
 				if (dataFeed.querySelector('parsererror')) {
 					state.urlForm.errors = i18nextInstance.t('badRss');
 					} else {
 						state.urlForm.loadedUrl.push(getUrl);
-						state.urlForm.errors = '';
-						const post = {
-							id: uniqueId(),
-							title: dataFeed.querySelector('title').textContent,
-							description: dataFeed.querySelector('description').textContent,
-						};
-						const feeds = [];
-						dataFeed.querySelectorAll('item').forEach((feed) => {
-							feeds.push({
-								id: uniqueId(),
-								idFeed: post.id,
-								title: feed.querySelector('title').textContent,
-								description: feed.querySelector('description').textContent,
-								link: feed.querySelector('link').textContent,
-							});
-						});
-						state.feeds.push({ post, feeds });
+						const feeds = makeFeeds(dataFeed);
+						const posts = makePosts(dataFeed, feeds.id);
+						state.feeds.push(feeds);
+						state.posts.push(...posts);
 					}
 				})
 			.catch((error) => { state.urlForm.errors = error.message; })

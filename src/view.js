@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import { isEmpty } from 'lodash';
 import * as axios from 'axios';
 import * as yup from 'yup';
 import { setLocale } from 'yup';
@@ -26,55 +25,47 @@ export const parserUrl = (url) => {
 };
 
 export const handleErrors = (elements, value, i18nextInstance) => {
-	if (!isEmpty(value)) {
-		if (value === 'Network Error') {
-			elements.dangerZone.textContent = i18nextInstance.t('netWorkError');
-		} else {
-			elements.dangerZone.textContent = value;
-		}
-		elements.dangerZone.classList.add('text-danger');
-		elements.mainFormUrlInput.classList.add('is-invalid');
-		elements.dangerZone.classList.remove('text-success');
+	if (value === 'Network Error') {
+		elements.dangerZone.textContent = i18nextInstance.t('netWorkError');
 	} else {
-		elements.mainForm.reset();
-		elements.mainFormUrlInput.focus();
-		elements.dangerZone.textContent = i18nextInstance.t('urlLoadSuccess');
-		elements.dangerZone.classList.add('text-success');
-		elements.dangerZone.classList.remove('text-danger');
-		elements.mainFormUrlInput.classList.remove('is-invalid');
+		elements.dangerZone.textContent = value;
 	}
+	elements.dangerZone.classList.add('text-danger');
+	elements.mainFormUrlInput.classList.add('is-invalid');
+	elements.dangerZone.classList.remove('text-success');
 };
 
 export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
-const renderFeed = (elements, value) => {
-	//console.log(value[0].feeds)
-	const preparePostsLi = value.map((item) => (
-		`<li class="list-group-item border-0 border-end-0">
-		<h3 class="h6 m-0">${item.post.title}</h3>
-		<p class="m-0 small text-black-50">${item.post.description}</p>
+const cleanForm = (elements, i18nextInstance) => {
+	elements.mainForm.reset();
+	elements.mainFormUrlInput.focus();
+	elements.dangerZone.textContent = i18nextInstance.t('urlLoadSuccess');
+	elements.dangerZone.classList.add('text-success');
+	elements.dangerZone.classList.remove('text-danger');
+	elements.mainFormUrlInput.classList.remove('is-invalid');
+};
+
+const showPosts = (elements, value) => {
+	const preparePosts = value.map((post) => (
+		`<li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
+		<a href="${post.link}" class="fw-bold" data-id="${post.id}" target="_blank" rel="noopener noreferrer">${post.title}</a>
 		</li>`
 	)).join('');
-	const postsTemplate = `<div class="card border-0"><div class="card-body">
-	<h2 class="card-title h4">Фиды</h2></div><ul class="list-group border-0 rounded-0">${preparePostsLi}</ul></div>`;
-	elements.feedsPlace.innerHTML = postsTemplate;
-	const prepareFeedsLi = value.map((item) => (
-		item.feeds.map((el) => (
-			`<li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
-			<a href="${el.link}" class="fw-bold" data-id="${el.id}" target="_blank" rel="noopener noreferrer">${el.title}</a>
-			</li>`
-		)).join('')
-	));
+	const postsTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div>
+	<ul class="list-group border-0 rounded-0">${preparePosts}</ul></div>`;
+	elements.postsPlace.innerHTML = postsTemplate;
+};
 
-
-	// <li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
-	//   <a href="https://ru.hexlet.io/courses/python-basics/lessons/stdlib/theory_unit" class="fw-bold" data-id="2" target="_blank" rel="noopener noreferrer">Стандартная билиотека / Python: Основы программирования</a>
-	//   <button type="button" class="btn btn-outline-primary btn-sm" data-id="2" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button>
-	// </li>
-
-	const feedsTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div>
-  	<ul class="list-group border-0 rounded-0">${prepareFeedsLi}</ul></div>`;
-	elements.postsPlace.innerHTML = feedsTemplate;
+const showFeeds = (elements, value) => {
+	const prepareFeed = value.map((feed) => (
+	`<li class="list-group-item border-0 border-end-0">
+	<h3 class="h6 m-0">${feed.title}</h3>
+	<p class="m-0 small text-black-50">${feed.description}</p></li>`
+	)).join('');
+	const feedTemplate = `<div class="card border-0"><div class="card-body">
+	<h2 class="card-title h4">Фиды</h2></div><ul class="list-group border-0 rounded-0">${prepareFeed}</ul></div>`;
+	elements.feedsPlace.innerHTML = feedTemplate;
 };
 
 export const render = (elements, i18nextInstance) => (path, value) => {
@@ -83,55 +74,13 @@ export const render = (elements, i18nextInstance) => (path, value) => {
 			handleErrors(elements, value, i18nextInstance);
 			break;
 		case 'feeds':
-			renderFeed(elements, value);
+			showFeeds(elements, value);
+			cleanForm(elements, i18nextInstance);
+			break;
+		case 'posts':
+			showPosts(elements, value);
 			break;
 		default:
 			break;
 	}
 };
-
-
-// export const loadFeeds = (state, getUrl, elements, i18nextInstance) => {
-// 	//elements.addFeedButton.setAttribute('disabled', true);
-// 	return axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(getUrl)}`)
-// 		.then((response) => {
-// 			const parsed = parserUrl(response);
-// 			if (parsed.querySelector('parsererror')) {
-// 				handleErrors(elements, i18nextInstance.t('badRss'));
-// 			} else {
-// 				console.log(state);
-// 				state.urlForm.loadedUrl.push(getUrl);
-// 				elements.mainForm.reset();
-// 				elements.mainFormUrlInput.focus();
-// 				elements.dangerZone.textContent = i18nextInstance.t('urlLoadSuccess');
-// 				elements.dangerZone.classList.add('text-success');
-// 				elements.dangerZone.classList.remove('text-danger');
-// 				elements.mainFormUrlInput.classList.remove('is-invalid');
-// 			}
-// 		})
-// 		.catch(() => handleErrors(elements, i18nextInstance.t('netWorkError')))
-// 		//.then(() => { elements.addFeedButton.disabled = false; });
-// };
-
-// export const handleProcessLoading = (elements, val, i18nextInstance) => {
-// 	elements.addFeedButton.setAttribute('disabled', true);
-// 	axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(last(val))}`)
-// 		.then((response) => {
-// 			const parsed = parserUrl(response);
-// 			if (parsed.querySelector('parsererror')) {
-// 				handleErrors(elements, i18nextInstance.t('badRss'));
-// 			} else {
-// 				console.log(parsed);
-// 			}
-// 		})
-// 		.catch((err) => console.log(err))
-// 		.then(() => { elements.addFeedButton.disabled = false; });
-// 	elements.mainForm.reset();
-// 	elements.mainFormUrlInput.focus();
-// 	elements.dangerZone.textContent = i18nextInstance.t('urlLoadSuccess');
-// 	elements.dangerZone.classList.add('text-success');
-// 	elements.dangerZone.classList.remove('text-danger');
-// 	elements.mainFormUrlInput.classList.remove('is-invalid');
-// };
-
-

@@ -28,28 +28,27 @@ const app = (i18nextInstance) => {
 		},
 		feeds: [],
 		posts: [],
-		updatePosts: [],
 	}, render(elements, i18nextInstance));
 
 	const update = () => {
+		const all = [];
 		if (state.urlForm.loadedUrl.length !== 0) {
-			// feeds.map((feed) => {
-			// loadUrl(feed.url)
-			// .then((rss) => {
-			// 		const data1Feed = parserUrl(rss, i18nextInstance);
-			// 		state.posts = [];
-			// 		if (data1Feed.querySelector('pubDate').textContent !== feed.date) {
-			// 			const newPosts = makePosts(data1Feed, feed.id);
-			// 			feed.date = data1Feed.querySelector('pubDate').textContent;
-			// 			state.posts.push(...newPosts);
-			// 		} else {
-			// 			const otherPosts = makePosts(data1Feed, feed.id);
-			// 			state.posts.push(...otherPosts);
-			// 		}
-			// 	});
-			// });
+			state.feeds.map((feed) => {
+			loadUrl(feed.url)
+			.then((rss) => {
+				const dataFeed = parserUrl(rss, i18nextInstance);
+				if (dataFeed.querySelector('pubDate').textContent !== feed.date) {
+					const newPosts = makePosts(dataFeed, feed.id);
+					feed.date = dataFeed.querySelector('pubDate').textContent;
+					all.push(...newPosts);
+				} else {
+					const otherPosts = makePosts(dataFeed, feed.id);
+					all.push(...otherPosts);
+				}
+				});
+			});
+			// state.posts.push();
 		}
-		// console.log(state.updatePosts);
 		setTimeout(update, 5000);
 	};
 	update();
@@ -73,7 +72,7 @@ const app = (i18nextInstance) => {
 				state.urlForm.loadedUrl.push(getUrl);
 				state.feeds.push(feeds);
 				state.posts.push(...posts);
-				// console.log(state.posts)
+				// console.log(posts)
 			})
 			.catch((error) => { state.urlForm.errors = error.message; })
 			.then(() => { elements.addFeedButton.disabled = false; });

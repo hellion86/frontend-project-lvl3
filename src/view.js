@@ -19,9 +19,14 @@ export const validAsync = (url, i18nextInstance) => {
 	return schema.validate(url, { abortEarly: false });
 };
 
-export const parserUrl = (url) => {
+export const parserUrl = (url, i18nextInstance) => {
 	const parser = new DOMParser();
-	return parser.parseFromString(url.data.contents, 'text/xml');
+	const dataFromUrl = parser.parseFromString(url.data.contents, 'text/xml');
+	if (dataFromUrl.querySelector('parsererror')) {
+		throw new Error(`${i18nextInstance.t('badRss')}`);
+	} else {
+		return dataFromUrl;
+	}
 };
 
 export const handleErrors = (elements, value, i18nextInstance) => {
@@ -46,10 +51,10 @@ const cleanForm = (elements, i18nextInstance) => {
 	elements.mainFormUrlInput.classList.remove('is-invalid');
 };
 
-const showPosts = (elements, value) => {
+export const showPosts = (elements, value) => {
 	const preparePosts = value.map((post) => (
 		`<li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
-		<a href="${post.link}" class="fw-bold" data-id="${post.id}" target="_blank" rel="noopener noreferrer">${post.title}</a>
+		<a href="${post.link}" class="fw-bold" data-id="${post.id}" feed-id="${post.idFeed}" target="_blank" rel="noopener noreferrer">${post.title}</a>
 		</li>`
 	)).join('');
 	const postsTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div>

@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import 'bootstrap/dist/css/bootstrap.min.css';
 import onChange from 'on-change';
 import i18n from 'i18next';
@@ -27,7 +28,31 @@ const app = (i18nextInstance) => {
 		},
 		feeds: [],
 		posts: [],
+		updatePosts: [],
 	}, render(elements, i18nextInstance));
+
+	const update = () => {
+		if (state.urlForm.loadedUrl.length !== 0) {
+			// feeds.map((feed) => {
+			// loadUrl(feed.url)
+			// .then((rss) => {
+			// 		const data1Feed = parserUrl(rss, i18nextInstance);
+			// 		state.posts = [];
+			// 		if (data1Feed.querySelector('pubDate').textContent !== feed.date) {
+			// 			const newPosts = makePosts(data1Feed, feed.id);
+			// 			feed.date = data1Feed.querySelector('pubDate').textContent;
+			// 			state.posts.push(...newPosts);
+			// 		} else {
+			// 			const otherPosts = makePosts(data1Feed, feed.id);
+			// 			state.posts.push(...otherPosts);
+			// 		}
+			// 	});
+			// });
+		}
+		// console.log(state.updatePosts);
+		setTimeout(update, 5000);
+	};
+	update();
 
 	elements.mainForm.addEventListener('submit', (e) => {
 		e.preventDefault();
@@ -39,21 +64,21 @@ const app = (i18nextInstance) => {
 		validAsync(state.urlForm, i18nextInstance)
 			.then((data) => loadUrl(data.url))
 			.then((rss) => {
-				const dataFeed = parserUrl(rss);
-				if (dataFeed.querySelector('parsererror')) {
-					state.urlForm.errors = i18nextInstance.t('badRss');
-					} else {
-						state.urlForm.loadedUrl.push(getUrl);
-						const feeds = makeFeeds(dataFeed);
-						const posts = makePosts(dataFeed, feeds.id);
-						state.feeds.push(feeds);
-						state.posts.push(...posts);
-					}
-				})
+				// console.log(rss)
+				const dataFeed = parserUrl(rss, i18nextInstance);
+				// console.log(dataFeed)
+				const feeds = makeFeeds(dataFeed, state.urlForm.url);
+				const posts = makePosts(dataFeed, feeds.id);
+				// console.log(posts)
+				state.urlForm.loadedUrl.push(getUrl);
+				state.feeds.push(feeds);
+				state.posts.push(...posts);
+				// console.log(state.posts)
+			})
 			.catch((error) => { state.urlForm.errors = error.message; })
 			.then(() => { elements.addFeedButton.disabled = false; });
 	});
-	};
+};
 
 const runApp = () => {
 	const i18nextInstance = i18n.createInstance();

@@ -3,34 +3,34 @@ import * as axios from 'axios';
 import * as yup from 'yup';
 import { setLocale } from 'yup';
 
-export const validAsync = (url, i18nextInstance) => {
+export const validateUrl = (urlForm, i18) => {
 	setLocale({
 		string: {
-			url: i18nextInstance.t('urlError'),
+			url: i18.t('urlError'),
 		},
 		mixed: {
-			notOneOf: i18nextInstance.t('urlExist'),
+			notOneOf: i18.t('urlExist'),
 		},
 	});
 	const schema = yup.object({
-		url: yup.string().url().notOneOf(url.loadedUrl),
+		url: yup.string().url().notOneOf(urlForm.loadedUrl),
 	});
-	return schema.validate(url, { abortEarly: false });
+	return schema.validate(urlForm, { abortEarly: false });
 };
 
-export const parserUrl = (url, i18nextInstance) => {
+export const parserUrl = (url, i18) => {
 	const parser = new DOMParser();
 	const dataFromUrl = parser.parseFromString(url.data.contents, 'text/xml');
 	if (dataFromUrl.querySelector('parsererror')) {
-		throw new Error(`${i18nextInstance.t('badRss')}`);
+		throw new Error(`${i18.t('badRss')}`);
 	} else {
 		return dataFromUrl;
 	}
 };
 
-export const handleErrors = (elements, value, i18nextInstance) => {
+export const handleErrors = (elements, value, i18) => {
 	if (value === 'Network Error') {
-		elements.dangerZone.textContent = i18nextInstance.t('netWorkError');
+		elements.dangerZone.textContent = i18.t('netWorkError');
 	} else {
 		elements.dangerZone.textContent = value;
 	}
@@ -41,10 +41,10 @@ export const handleErrors = (elements, value, i18nextInstance) => {
 
 export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
-const cleanForm = (elements, i18nextInstance) => {
+const cleanForm = (elements, i18) => {
 	elements.mainForm.reset();
 	elements.mainFormUrlInput.focus();
-	elements.dangerZone.textContent = i18nextInstance.t('urlLoadSuccess');
+	elements.dangerZone.textContent = i18.t('urlLoadSuccess');
 	elements.dangerZone.classList.add('text-success');
 	elements.dangerZone.classList.remove('text-danger');
 	elements.mainFormUrlInput.classList.remove('is-invalid');
@@ -72,17 +72,24 @@ const showFeeds = (elements, value) => {
 	elements.feedsPlace.innerHTML = feedTemplate;
 };
 
-export const render = (elements, i18nextInstance) => (path, value) => {
+export const render = (elements, i18) => (path, value) => {
 	switch (path) {
 		case 'urlForm.errors':
-			handleErrors(elements, value, i18nextInstance);
+			handleErrors(elements, value, i18);
 			break;
 		case 'feeds':
 			showFeeds(elements, value);
-			cleanForm(elements, i18nextInstance);
+			cleanForm(elements, i18);
 			break;
 		case 'posts':
 			showPosts(elements, value);
+			break;
+		case 'urlForm.addButtonShow':
+			if (value) {
+				elements.addFeedButton.setAttribute('disabled', true);
+			} else {
+				elements.addFeedButton.removeAttribute('disabled');
+			}
 			break;
 		default:
 			break;

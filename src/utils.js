@@ -1,13 +1,13 @@
 import { uniqueId } from 'lodash';
 
-export const makePosts = (data, feedId) => {
+export const makePosts = (data, idFeed) => {
 	const posts = [];
 	const lenNodeList = data.querySelectorAll('item').length;
 	const items = data.querySelectorAll('item');
 	for (let i = 0; i <= lenNodeList - 1; i += 1) {
 		posts.push({
 			id: i + 1,
-			idFeed: feedId,
+			idFeed,
 			title: items[i].querySelector('title').textContent,
 			description: items[i].querySelector('description').textContent,
 			link: items[i].querySelector('link').textContent,

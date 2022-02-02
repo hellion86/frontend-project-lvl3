@@ -13,8 +13,7 @@ export const validAsync = (url, i18nextInstance) => {
 		},
 	});
 	const schema = yup.object({
-		url: yup.string().url(),
-		checkLoadedUrl: yup.mixed().notOneOf(url.loadedUrl),
+		url: yup.string().url().notOneOf(url.loadedUrl),
 	});
 	return schema.validate(url, { abortEarly: false });
 };

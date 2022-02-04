@@ -3,7 +3,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import onChange from 'on-change';
 import i18n from 'i18next';
-import { concat, find} from 'lodash';
+import { concat, find } from 'lodash';
 import {
 	render, loadUrl, parserUrl, validateUrl,
 } from './view.js';
@@ -13,15 +13,16 @@ import ru from './locales/ru.js';
 const app = (i18) => {
 	const elements = {
 		mainForm: document.querySelector('form'),
-		dangerZone: document.querySelector('.feedback'),
+		errorPlace: document.querySelector('.feedback'),
 		mainFormUrlInput: document.querySelector('#url-input'),
 		addFeedButton: document.querySelector('[aria-label="add"]'),
 		postsPlace: document.querySelector('.posts'),
 		feedsPlace: document.querySelector('.feeds'),
 		modalForm: document.querySelector('#modal'),
 		modalTitle: document.querySelector('.modal-title'),
-		modalBody: document.querySelector('.modal-title'),
-		modalFooter: document.querySelector('.modal-footer'),
+		modalBody: document.querySelector('.modal-body'),
+		modalReadButton: document.querySelector('[role="button"]'),
+		modalCloseButton: document.querySelectorAll('[data-bs-dismiss="modal"]'),
 		body: document.querySelector('body'),
 	};
 
@@ -33,6 +34,7 @@ const app = (i18) => {
 			errors: {},
 			addButtonShow: false,
 		},
+		UIState: {},
 		feeds: [],
 		posts: [],
 	}, render(elements, i18));
@@ -74,30 +76,47 @@ const app = (i18) => {
 			})
 			.then(() => {
 				// find buttons add event listener
-				const buttons = document.querySelectorAll('.btn-outline-primary');
-				buttons.forEach((button) => {
+				const postsButtons = document.querySelectorAll('.btn-outline-primary');
+				const divfooter = document.createElement('div');
+				divfooter.classList.add('modal-backdrop', 'fade', 'show');
+				postsButtons.forEach((button) => {
 					button.addEventListener('click', (but) => {
+						// find post by button id
 						const postId = but.target.getAttribute('data-id');
 						const postOnDocument = document.querySelector(`[data-id="${postId}"]`);
+						const getPost = find(state.posts, ['id', postId]);
+						// replace font if read link
 						postOnDocument.classList.replace('fw-bold', 'fw-normal');
-						// postOnDocument.classList.add('link-secondary');
 						// prepare show modal
-						// document.body.classList.add('modal-open');
-						// document.body.setAttribute('style', 'overflow: hidden; padding-right: 16px;');
-						// const divfooter = document.createElement('div');
-						// divfooter.classList.add('modal-backdrop', 'fade', 'show');
-						// document.body.append(divfooter);
-						// prepare show modal
+							document.body.classList.add('modal-open');
+							document.body.setAttribute('style', 'overflow: hidden; padding-right: 16px;');
+							document.body.append(divfooter);
 						// showModal
-						// showModal
-
-						// style="overflow: hidden; padding-right: 16px;"
-						// const postData = state.posts.filter((post) => (post.id === postId));
-						// const finde = find(state.posts, ['id', postId]);
-						// console.log(finde)
-						// console.log(elements.modal);
-						// console.log(showPost[0].title);
-						// console.log(showPost[0].description);
+							elements.modalForm.classList.add('show');
+							elements.modalForm.setAttribute('style', 'display: block;');
+							elements.modalForm.removeAttribute('aria-hidden');
+							elements.modalForm.setAttribute('aria-modal', 'true');
+							elements.modalForm.setAttribute('role', 'dialog');
+						// put data from post to modal
+							elements.modalTitle.textContent = getPost.title;
+							elements.modalBody.textContent = getPost.description;
+							elements.modalReadButton.setAttribute('href', getPost.link);
+					});
+				});
+				// add listener to close modal form
+				elements.modalCloseButton.forEach((closeBtn) => {
+					closeBtn.addEventListener('click', () => {
+						document.body.classList.remove('modal-open');
+						document.body.setAttribute('style', '');
+						document.body.removeChild(divfooter);
+						elements.modalForm.classList.remove('show');
+						elements.modalForm.setAttribute('style', 'display: none;');
+						elements.modalForm.setAttribute('aria-hidden', 'true');
+						elements.modalForm.removeAttribute('aria-modal');
+						elements.modalForm.removeAttribute('role');
+						elements.modalTitle.textContent = '';
+						elements.modalBody.textContent = '';
+						elements.modalReadButton.setAttribute('href', '#');
 					});
 				});
 			})

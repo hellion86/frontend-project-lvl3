@@ -30,13 +30,13 @@ export const parserUrl = (url, i18) => {
 
 export const handleErrors = (elements, value, i18) => {
 	if (value === 'Network Error') {
-		elements.dangerZone.textContent = i18.t('netWorkError');
+		elements.errorPlace.textContent = i18.t('netWorkError');
 	} else {
-		elements.dangerZone.textContent = value;
+		elements.errorPlace.textContent = value;
 	}
-	elements.dangerZone.classList.add('text-danger');
+	elements.errorPlace.classList.add('text-danger');
 	elements.mainFormUrlInput.classList.add('is-invalid');
-	elements.dangerZone.classList.remove('text-success');
+	elements.errorPlace.classList.remove('text-success');
 };
 
 export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
@@ -44,9 +44,9 @@ export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.
 const cleanForm = (elements, i18) => {
 	elements.mainForm.reset();
 	elements.mainFormUrlInput.focus();
-	elements.dangerZone.textContent = i18.t('urlLoadSuccess');
-	elements.dangerZone.classList.add('text-success');
-	elements.dangerZone.classList.remove('text-danger');
+	elements.errorPlace.textContent = i18.t('urlLoadSuccess');
+	elements.errorPlace.classList.add('text-success');
+	elements.errorPlace.classList.remove('text-danger');
 	elements.mainFormUrlInput.classList.remove('is-invalid');
 };
 

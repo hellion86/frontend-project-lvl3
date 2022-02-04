@@ -3,7 +3,7 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
 import onChange from 'on-change';
 import i18n from 'i18next';
-import { concat } from 'lodash';
+import { concat, find} from 'lodash';
 import {
 	render, loadUrl, parserUrl, validateUrl,
 } from './view.js';
@@ -18,6 +18,11 @@ const app = (i18) => {
 		addFeedButton: document.querySelector('[aria-label="add"]'),
 		postsPlace: document.querySelector('.posts'),
 		feedsPlace: document.querySelector('.feeds'),
+		modalForm: document.querySelector('#modal'),
+		modalTitle: document.querySelector('.modal-title'),
+		modalBody: document.querySelector('.modal-title'),
+		modalFooter: document.querySelector('.modal-footer'),
+		body: document.querySelector('body'),
 	};
 
 	const state = onChange({
@@ -60,11 +65,41 @@ const app = (i18) => {
 			.then((data) => loadUrl(data.url))
 			.then((rss) => {
 				const parsedRss = parserUrl(rss, i18);
-				const feeds = makeFeeds(parsedRss, state.urlForm.url);
+				const numberOfFeeds = state.urlForm.loadedUrl.length;
+				const feeds = makeFeeds(parsedRss, state.urlForm.url, numberOfFeeds);
 				const posts = makePosts(parsedRss, feeds.id);
 				state.urlForm.loadedUrl.push(state.urlForm.url);
 				state.feeds.push(feeds);
 				state.posts.push(...posts);
+			})
+			.then(() => {
+				// find buttons add event listener
+				const buttons = document.querySelectorAll('.btn-outline-primary');
+				buttons.forEach((button) => {
+					button.addEventListener('click', (but) => {
+						const postId = but.target.getAttribute('data-id');
+						const postOnDocument = document.querySelector(`[data-id="${postId}"]`);
+						postOnDocument.classList.replace('fw-bold', 'fw-normal');
+						// postOnDocument.classList.add('link-secondary');
+						// prepare show modal
+						// document.body.classList.add('modal-open');
+						// document.body.setAttribute('style', 'overflow: hidden; padding-right: 16px;');
+						// const divfooter = document.createElement('div');
+						// divfooter.classList.add('modal-backdrop', 'fade', 'show');
+						// document.body.append(divfooter);
+						// prepare show modal
+						// showModal
+						// showModal
+
+						// style="overflow: hidden; padding-right: 16px;"
+						// const postData = state.posts.filter((post) => (post.id === postId));
+						// const finde = find(state.posts, ['id', postId]);
+						// console.log(finde)
+						// console.log(elements.modal);
+						// console.log(showPost[0].title);
+						// console.log(showPost[0].description);
+					});
+				});
 			})
 			.catch((error) => { state.urlForm.errors = error.message; })
 			.then(() => { state.urlForm.addButtonShow = false; });

@@ -1,25 +1,23 @@
 import { uniqueId } from 'lodash';
 
 export const makePosts = (data, idFeed) => {
-	const posts = [];
-	const lenNodeList = data.querySelectorAll('item').length;
 	const items = data.querySelectorAll('item');
-	for (let i = 0; i <= lenNodeList - 1; i += 1) {
-		posts.push({
-			id: i + 1,
+	const posts = Array.from(items).map((item) => (
+		{
+			id: uniqueId(),
 			idFeed,
-			title: items[i].querySelector('title').textContent,
-			description: items[i].querySelector('description').textContent,
-			link: items[i].querySelector('link').textContent,
-		});
-	}
+			title: item.querySelector('title').textContent,
+			description: item.querySelector('description').textContent,
+			link: item.querySelector('link').textContent,
+		}
+	));
 	return posts;
 };
 
-export const makeFeeds = (data, url) => {
+export const makeFeeds = (data, url, num) => {
 	const date = data.querySelector('pubDate') ? data.querySelector('pubDate').textContent : new Date();
 	const feed = {
-		id: uniqueId(),
+		id: num + 1,
 		url,
 		date,
 		title: data.querySelector('title').textContent,

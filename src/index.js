@@ -54,8 +54,6 @@ const app = (i18) => {
 				state.urlForm.loadedUrl.push(state.urlForm.url);
 				state.feeds.push(feeds);
 				state.posts.push(...posts);
-				// console.log(state)
-				// console.log(state);
 			})
 			.then(() => addListenerForModal(state))
 			.catch((error) => { state.urlForm.errors = error.message; })
@@ -72,4 +70,4 @@ const runApp = () => {
 	}).then(() => app(i18nextInstance));
 };
 
-runApp();
+export default runApp;

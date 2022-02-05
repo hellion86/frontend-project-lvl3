@@ -69,8 +69,6 @@ const fillModal = (elements, post) => {
 };
 
 export const render = (elements, i18) => (path, value) => {
-	// console.log(path)
-	// console.log(value);
 	switch (path) {
 		case 'urlForm.errors':
 			handleErrors(elements, value, i18);

@@ -24,6 +24,7 @@ export const makePosts = (data, idFeed) => {
 			title: item.querySelector('title').textContent,
 			description: item.querySelector('description').textContent,
 			link: item.querySelector('link').textContent,
+			uiReaded: 'fw-bold',
 		}
 	));
 	return posts;
@@ -43,12 +44,20 @@ export const makeFeeds = (data, url, num) => {
 
 export const addListenerForModal = (state) => {
 	const postsButtons = document.querySelectorAll('.btn-outline-primary');
+	const allHrefsOnPage = document.querySelectorAll('.fw-bold');
+	const handler = (item) => {
+		const postId = item.target.getAttribute('data-id');
+		const getPost = find(state.posts, ['id', postId]);
+		getPost.uiReaded = 'fw-normal';
+		state.readedPosts = getPost;
+	};
+
+	allHrefsOnPage.forEach((href) => {
+		href.addEventListener('click', (link) => handler(link));
+	});
+
 	postsButtons.forEach((button) => {
-		button.addEventListener('click', (but) => {
-			const postId = but.target.getAttribute('data-id');
-			const getPost = find(state.posts, ['id', postId]);
-			state.readedPosts = getPost;
-		});
+		button.addEventListener('click', (btn) => handler(btn));
 	});
 };
 

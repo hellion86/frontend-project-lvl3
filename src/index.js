@@ -1,13 +1,13 @@
-/* eslint-disable array-callback-return */
-/* eslint-disable no-param-reassign */
 import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import onChange from 'on-change';
 import i18n from 'i18next';
-import { concat, find } from 'lodash';
 import {
-	render, loadUrl, parserUrl, validateUrl,
+	render, validateUrl,
 } from './view.js';
-import { makePosts, makeFeeds } from './utils.js';
+import {
+	makePosts, makeFeeds, loadUrl, updateRss, parserUrl, addListenerForModal,
+} from './utils.js';
 import ru from './locales/ru.js';
 
 const app = (i18) => {
@@ -34,29 +34,10 @@ const app = (i18) => {
 			errors: {},
 			addButtonShow: false,
 		},
-		UIState: {},
+		readedPosts: [],
 		feeds: [],
 		posts: [],
 	}, render(elements, i18));
-
-	const update = () => {
-		if (state.urlForm.loadedUrl.length !== 0) {
-			state.feeds.map((feed) => {
-				loadUrl(feed.url)
-					.then((rss) => {
-						const dataFeed = parserUrl(rss, i18);
-							if (dataFeed.querySelector('pubDate').textContent !== feed.date) {
-								const newPosts = makePosts(dataFeed, feed.id);
-								feed.date = dataFeed.querySelector('pubDate').textContent;
-								const otherPosts = state.posts.filter((post1) => post1.idFeed !== feed.id);
-								state.posts = concat(newPosts, otherPosts).sort((a, b) => a.idFeed - b.idFeed);
-							}
-					}).catch((error) => { state.urlForm.errors = error.message; });
-			});
-		}
-		setTimeout(update, 5000);
-	};
-	update();
 
 	elements.mainForm.addEventListener('submit', (e) => {
 		e.preventDefault();
@@ -74,55 +55,11 @@ const app = (i18) => {
 				state.feeds.push(feeds);
 				state.posts.push(...posts);
 			})
-			.then(() => {
-				// find buttons add event listener
-				const postsButtons = document.querySelectorAll('.btn-outline-primary');
-				const divfooter = document.createElement('div');
-				divfooter.classList.add('modal-backdrop', 'fade', 'show');
-				postsButtons.forEach((button) => {
-					button.addEventListener('click', (but) => {
-						// find post by button id
-						const postId = but.target.getAttribute('data-id');
-						const postOnDocument = document.querySelector(`[data-id="${postId}"]`);
-						const getPost = find(state.posts, ['id', postId]);
-						// replace font if read link
-						postOnDocument.classList.replace('fw-bold', 'fw-normal');
-						// prepare show modal
-							document.body.classList.add('modal-open');
-							document.body.setAttribute('style', 'overflow: hidden; padding-right: 16px;');
-							document.body.append(divfooter);
-						// showModal
-							elements.modalForm.classList.add('show');
-							elements.modalForm.setAttribute('style', 'display: block;');
-							elements.modalForm.removeAttribute('aria-hidden');
-							elements.modalForm.setAttribute('aria-modal', 'true');
-							elements.modalForm.setAttribute('role', 'dialog');
-						// put data from post to modal
-							elements.modalTitle.textContent = getPost.title;
-							elements.modalBody.textContent = getPost.description;
-							elements.modalReadButton.setAttribute('href', getPost.link);
-					});
-				});
-				// add listener to close modal form
-				elements.modalCloseButton.forEach((closeBtn) => {
-					closeBtn.addEventListener('click', () => {
-						document.body.classList.remove('modal-open');
-						document.body.setAttribute('style', '');
-						document.body.removeChild(divfooter);
-						elements.modalForm.classList.remove('show');
-						elements.modalForm.setAttribute('style', 'display: none;');
-						elements.modalForm.setAttribute('aria-hidden', 'true');
-						elements.modalForm.removeAttribute('aria-modal');
-						elements.modalForm.removeAttribute('role');
-						elements.modalTitle.textContent = '';
-						elements.modalBody.textContent = '';
-						elements.modalReadButton.setAttribute('href', '#');
-					});
-				});
-			})
+			.then(() => addListenerForModal(state))
 			.catch((error) => { state.urlForm.errors = error.message; })
 			.then(() => { state.urlForm.addButtonShow = false; });
 	});
+	updateRss(state, i18);
 };
 
 const runApp = () => {

@@ -1,5 +1,4 @@
 /* eslint-disable no-param-reassign */
-import * as axios from 'axios';
 import * as yup from 'yup';
 import { setLocale } from 'yup';
 
@@ -18,16 +17,6 @@ export const validateUrl = (urlForm, i18) => {
 	return schema.validate(urlForm, { abortEarly: false });
 };
 
-export const parserUrl = (url, i18) => {
-	const parser = new DOMParser();
-	const dataFromUrl = parser.parseFromString(url.data.contents, 'text/xml');
-	if (dataFromUrl.querySelector('parsererror')) {
-		throw new Error(`${i18.t('badRss')}`);
-	} else {
-		return dataFromUrl;
-	}
-};
-
 export const handleErrors = (elements, value, i18) => {
 	if (value === 'Network Error') {
 		elements.errorPlace.textContent = i18.t('netWorkError');
@@ -38,8 +27,6 @@ export const handleErrors = (elements, value, i18) => {
 	elements.mainFormUrlInput.classList.add('is-invalid');
 	elements.errorPlace.classList.remove('text-success');
 };
-
-export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
 
 const cleanForm = (elements, i18) => {
 	elements.mainForm.reset();
@@ -73,6 +60,14 @@ const showFeeds = (elements, value) => {
 	elements.feedsPlace.innerHTML = feedTemplate;
 };
 
+const fillModal = (elements, post) => {
+	const postOnDocument = document.querySelector(`[data-id="${post.id}"]`);
+	postOnDocument.classList.replace('fw-bold', 'fw-normal');
+	elements.modalTitle.textContent = post.title;
+	elements.modalBody.textContent = post.description;
+	elements.modalReadButton.setAttribute('href', post.link);
+};
+
 export const render = (elements, i18) => (path, value) => {
 	switch (path) {
 		case 'urlForm.errors':
@@ -91,6 +86,9 @@ export const render = (elements, i18) => (path, value) => {
 			} else {
 				elements.addFeedButton.removeAttribute('disabled');
 			}
+			break;
+		case 'readedPosts':
+			fillModal(elements, value);
 			break;
 		default:
 			break;

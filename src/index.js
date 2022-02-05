@@ -70,4 +70,4 @@ const runApp = () => {
 	}).then(() => app(i18nextInstance));
 };
 
-export default runApp;
+export default (() => { runApp(); });

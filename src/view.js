@@ -7,22 +7,22 @@ export const validateUrl = (urlForm, i18) => {
 		string: {
 			url: i18.t('urlError'),
 		},
+		// mixed: {
+		// notOneOf: i18.t('urlExist'),
+		// },
 		mixed: {
 			notOneOf: i18.t('urlExist'),
 		},
 	});
 	const schema = yup.object({
-		url: yup.string().url().notOneOf(urlForm.loadedUrl),
+		url: yup.string().url(),
+		checkLoadedUrl: yup.mixed().notOneOf(urlForm.loadedUrl),
 	});
 	return schema.validate(urlForm, { abortEarly: false });
 };
 
 export const handleErrors = (elements, value, i18) => {
-	if (value === 'Network Error') {
-		elements.errorPlace.innerHTML = i18.t('netWorkError');
-	} else {
-		elements.errorPlace.innerHTML = value;
-	}
+	elements.errorPlace.innerHTML = value === 'Network Error' ? i18.t('netWorkError') : value;
 	elements.errorPlace.classList.add('text-danger');
 	elements.mainFormUrlInput.classList.add('is-invalid');
 	elements.errorPlace.classList.remove('text-success');

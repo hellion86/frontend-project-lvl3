@@ -29,6 +29,7 @@ const app = (i18) => {
 	const state = onChange({
 		urlForm: {
 			loadedUrl: [],
+			checkLoadedUrl: '',
 			validUrl: '',
 			url: '',
 			errors: {},
@@ -44,6 +45,7 @@ const app = (i18) => {
 		const formData = new FormData(e.target);
 		state.urlForm.url = formData.get('url');
 		state.urlForm.addButtonShow = true;
+		state.urlForm.checkLoadedUrl = state.urlForm.url;
 		validateUrl(state.urlForm, i18)
 			.then((data) => loadUrl(data.url))
 			.then((rss) => {

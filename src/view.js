@@ -7,16 +7,12 @@ export const validateUrl = (urlForm, i18) => {
 		string: {
 			url: i18.t('urlError'),
 		},
-		// mixed: {
-		// notOneOf: i18.t('urlExist'),
-		// },
 		mixed: {
 			notOneOf: i18.t('urlExist'),
 		},
 	});
 	const schema = yup.object({
-		url: yup.string().url(),
-		checkLoadedUrl: yup.mixed().notOneOf(urlForm.loadedUrl),
+		url: yup.string().url().notOneOf(urlForm.loadedUrl),
 	});
 	return schema.validate(urlForm, { abortEarly: false });
 };

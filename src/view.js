@@ -19,9 +19,9 @@ export const validateUrl = (urlForm, i18) => {
 
 export const handleErrors = (elements, value, i18) => {
 	if (value === 'Network Error') {
-		elements.errorPlace.textContent = i18.t('netWorkError');
+		elements.errorPlace.innerHTML = i18.t('netWorkError');
 	} else {
-		elements.errorPlace.textContent = value;
+		elements.errorPlace.innerHTML = value;
 	}
 	elements.errorPlace.classList.add('text-danger');
 	elements.mainFormUrlInput.classList.add('is-invalid');
@@ -31,7 +31,7 @@ export const handleErrors = (elements, value, i18) => {
 const cleanForm = (elements, i18) => {
 	elements.mainForm.reset();
 	elements.mainFormUrlInput.focus();
-	elements.errorPlace.textContent = i18.t('urlLoadSuccess');
+	elements.errorPlace.innerHTML = i18.t('urlLoadSuccess');
 	elements.errorPlace.classList.add('text-success');
 	elements.errorPlace.classList.remove('text-danger');
 	elements.mainFormUrlInput.classList.remove('is-invalid');

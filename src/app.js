@@ -53,11 +53,12 @@ const app = (i18) => {
 				state.urlForm.loadedUrl.push(state.urlForm.url);
 				state.feeds.push(feeds);
 				state.posts.push(...posts);
+				state.urlForm.addButtonShow = false;
 			})
 			.then(() => addListenerForModal(state))
-			.catch((error) => { state.urlForm.errors = error.message; })
-			.then(() => { state.urlForm.addButtonShow = false; });
-	});
+			.catch((error) => { state.urlForm.errors = error.message; });
+			// .then(() => { state.urlForm.addButtonShow = false; });
+		});
 	updateRss(state, i18);
 };
 

@@ -58,7 +58,7 @@ const app = (i18) => {
       .then(() => addListenerForModal(state))
       .catch((error) => { state.urlForm.errors = error.message; })
       .then(() => { state.urlForm.addButtonShow = false; });
-    });
+  });
   updateRss(state, i18);
 };
 

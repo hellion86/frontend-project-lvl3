@@ -25,7 +25,7 @@ export const makePosts = (data, idFeed) => {
       description: item.querySelector('description').textContent,
       link: item.querySelector('link').textContent,
       uiReaded: 'fw-bold',
-   }
+    }
   ));
   return posts;
 };
@@ -46,8 +46,8 @@ export const addListenerForModal = (state) => {
   const postsButtons = document.querySelectorAll('.btn-outline-primary');
   const allHrefsOnPage = document.querySelectorAll('.fw-bold');
   const handler = (item) => {
-  const postId = item.target.getAttribute('data-id');
-  const getPost = find(state.posts, ['id', postId]);
+    const postId = item.target.getAttribute('data-id');
+    const getPost = find(state.posts, ['id', postId]);
     getPost.uiReaded = 'fw-normal';
     state.readedPosts = getPost;
   };

@@ -78,7 +78,9 @@ export const render = (elements, i18) => (path, value) => {
 		case 'urlForm.addButtonShow':
 			if (value) {
 				elements.addFeedButton.setAttribute('disabled', true);
+				elements.mainFormUrlInput.setAttribute('readonly', true);
 			} else {
+				elements.mainFormUrlInput.removeAttribute('readonly');
 				elements.addFeedButton.removeAttribute('disabled');
 			}
 			break;

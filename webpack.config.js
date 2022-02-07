@@ -29,14 +29,14 @@ const config = {
         test: /\.(eot|svg|ttf|woff|woff2|png|jpg|gif)$/i,
         type: 'asset',
       },
-		{
-		test: /\.css$/,
-		use: [
-				'style-loader',
-				'css-loader',
-			],
-		},
-	],
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
+    ],
   },
 };
 

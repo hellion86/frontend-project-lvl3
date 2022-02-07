@@ -5,11 +5,11 @@ import { setLocale } from 'yup';
 export const validateUrl = (urlForm, i18) => {
   setLocale({
     string: {
-    url: i18.t('urlError'),
-  },
-  mixed: {
-    notOneOf: i18.t('urlExist'),
-  },
+      url: i18.t('urlError'),
+    },
+    mixed: {
+      notOneOf: i18.t('urlExist'),
+    },
   });
   const schema = yup.object({
     url: yup.string().url().notOneOf(urlForm.loadedUrl),

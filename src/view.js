@@ -63,6 +63,16 @@ const fillModal = (elements, post) => {
   elements.modalReadButton.setAttribute('href', post.link);
 };
 
+const disableUi = (elements, value) => {
+	if (value) {
+		elements.addFeedButton.setAttribute('disabled', true);
+		elements.mainFormUrlInput.setAttribute('readonly', true);
+	} else {
+		elements.mainFormUrlInput.removeAttribute('readonly');
+		elements.addFeedButton.removeAttribute('disabled');
+	}
+};
+
 export const render = (elements, i18) => (path, value) => {
   switch (path) {
     case 'urlForm.errors':
@@ -76,13 +86,7 @@ export const render = (elements, i18) => (path, value) => {
       showPosts(elements, value);
       break;
     case 'urlForm.addButtonShow':
-      if (value) {
-        elements.addFeedButton.setAttribute('disabled', true);
-        elements.mainFormUrlInput.setAttribute('readonly', true);
-      } else {
-        elements.mainFormUrlInput.removeAttribute('readonly');
-        elements.addFeedButton.removeAttribute('disabled');
-      }
+      disableUi(elements, value);
       break;
     case 'readedPosts':
       fillModal(elements, value);

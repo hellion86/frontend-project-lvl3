@@ -11,22 +11,22 @@ import {
 import ru from './locales/ru.js';
 
 const app = (i18) => {
-	const elements = {
-		mainForm: document.querySelector('form'),
-		errorPlace: document.querySelector('.feedback'),
-		mainFormUrlInput: document.querySelector('#url-input'),
-		addFeedButton: document.querySelector('[aria-label="add"]'),
-		postsPlace: document.querySelector('.posts'),
-		feedsPlace: document.querySelector('.feeds'),
-		modalForm: document.querySelector('#modal'),
-		modalTitle: document.querySelector('.modal-title'),
-		modalBody: document.querySelector('.modal-body'),
-		modalReadButton: document.querySelector('[role="button"]'),
-		modalCloseButton: document.querySelectorAll('[data-bs-dismiss="modal"]'),
-		body: document.querySelector('body'),
-	};
+  const elements = {
+    mainForm: document.querySelector('form'),
+    errorPlace: document.querySelector('.feedback'),
+    mainFormUrlInput: document.querySelector('#url-input'),
+    addFeedButton: document.querySelector('[aria-label="add"]'),
+    postsPlace: document.querySelector('.posts'),
+    feedsPlace: document.querySelector('.feeds'),
+    modalForm: document.querySelector('#modal'),
+    modalTitle: document.querySelector('.modal-title'),
+    modalBody: document.querySelector('.modal-body'),
+    modalReadButton: document.querySelector('[role="button"]'),
+    modalCloseButton: document.querySelectorAll('[data-bs-dismiss="modal"]'),
+    body: document.querySelector('body'),
+  };
 
-	const state = onChange({
+  const state = onChange({
     urlForm: {
       loadedUrl: [],
       url: '',

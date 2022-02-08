@@ -64,13 +64,13 @@ const fillModal = (elements, post) => {
 };
 
 const disableUi = (elements, value) => {
-	if (value) {
-		elements.addFeedButton.setAttribute('disabled', true);
-		elements.mainFormUrlInput.setAttribute('readonly', true);
-	} else {
-		elements.mainFormUrlInput.removeAttribute('readonly');
-		elements.addFeedButton.removeAttribute('disabled');
-	}
+  if (value) {
+    elements.addFeedButton.setAttribute('disabled', true);
+    elements.mainFormUrlInput.setAttribute('readonly', true);
+  } else {
+    elements.mainFormUrlInput.removeAttribute('readonly');
+    elements.addFeedButton.removeAttribute('disabled');
+  }
 };
 
 export const render = (elements, i18) => (path, value) => {

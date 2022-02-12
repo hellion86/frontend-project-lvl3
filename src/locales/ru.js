@@ -4,6 +4,13 @@ export default {
     urlExist: 'RSS уже существует',
     urlLoadSuccess: 'RSS успешно загружен',
     badRss: 'Ресурс не содержит валидный RSS',
-    netWorkError: 'Ошибка сети',
+    'Network Error': 'Ошибка сети',
+    posts: {
+      formTitle: 'Посты',
+      readButton: 'Просмотр',
+    },
+    feeds: {
+      feedTitle: 'Фиды',
+    },
   },
 };

@@ -6,7 +6,7 @@ import {
   render, validateUrl,
 } from './view.js';
 import {
-  makePosts, makeFeeds, loadUrl, updateRss, parserUrl, addListenerForModal,
+  loadUrl, updateRss, parserUrl, addListenerForModal,
 } from './utils.js';
 import ru from './locales/ru.js';
 
@@ -46,18 +46,17 @@ const app = (i18) => {
     validateUrl(state.urlForm, i18)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
-        const parsedRss = parserUrl(rss, i18);
-        const numberOfFeeds = state.urlForm.loadedUrl.length;
-        const feeds = makeFeeds(parsedRss, state.urlForm.url, numberOfFeeds);
-        const posts = makePosts(parsedRss, feeds.id);
+        const [feed, posts] = parserUrl(rss);
         state.urlForm.loadedUrl.push(state.urlForm.url);
-        state.feeds.push(feeds);
+        state.feeds.push(feed);
         state.posts.push(...posts);
         state.urlForm.addButtonShow = false;
+        addListenerForModal(state);
       })
-      .then(() => addListenerForModal(state))
-      .catch((error) => { state.urlForm.errors = error.message; })
-      .then(() => { state.urlForm.addButtonShow = false; });
+      .catch((error) => {
+        state.urlForm.errors = error.message;
+        state.urlForm.addButtonShow = false;
+      });
   });
   updateRss(state, i18);
 };

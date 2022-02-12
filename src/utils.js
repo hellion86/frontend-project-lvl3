@@ -1,63 +1,54 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
-import { uniqueId, concat, find } from 'lodash';
+import { uniqueId, find, differenceBy } from 'lodash';
 import * as axios from 'axios';
 
-export const parserUrl = (url, i18) => {
+export const parserUrl = (url, secret = false) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(url.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
-    throw new Error(`${i18.t('badRss')}`);
+    throw new Error('badRss');
   } else {
-    return dataFromUrl;
+    const feedDate = dataFromUrl.querySelector('pubDate') ? dataFromUrl.querySelector('pubDate').textContent : new Date();
+    const id1 = uniqueId();
+    const feed = {
+      date: feedDate,
+      id: id1,
+      url: url.data.status.url,
+      title: dataFromUrl.querySelector('title').textContent,
+      description: dataFromUrl.querySelector('description').textContent,
+    };
+
+    const items = dataFromUrl.querySelectorAll('item');
+    const idForPosts = secret ? `${secret}` : feed.id;
+    const posts = Array.from(items).map((item) => (
+      {
+        id: uniqueId(),
+        idFeed: idForPosts,
+        title: item.querySelector('title').textContent,
+        description: item.querySelector('description').textContent,
+        link: item.querySelector('link').textContent,
+        uiReaded: 'fw-bold',
+      }
+    ));
+    return [feed, posts];
   }
 };
 
-export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
-
-export const makePosts = (data, idFeed) => {
-  const items = data.querySelectorAll('item');
-  const posts = Array.from(items).map((item) => (
-    {
-      id: uniqueId(),
-      idFeed,
-      title: item.querySelector('title').textContent,
-      description: item.querySelector('description').textContent,
-      link: item.querySelector('link').textContent,
-      uiReaded: 'fw-bold',
-    }
-  ));
-  return posts;
-};
-
-export const makeFeeds = (data, url, num) => {
-  const date = data.querySelector('pubDate') ? data.querySelector('pubDate').textContent : new Date();
-  const feed = {
-    id: num + 1,
-    url,
-    date,
-    title: data.querySelector('title').textContent,
-    description: data.querySelector('description').textContent,
-  };
-  return feed;
+export const loadUrl = (link) => {
+  const myURL = new URL(link);
+  return axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(myURL.href)}`);
 };
 
 export const addListenerForModal = (state) => {
-  const postsButtons = document.querySelectorAll('.btn-outline-primary');
-  const allHrefsOnPage = document.querySelectorAll('.fw-bold');
-  const handler = (item) => {
+  const postsContainer = document.querySelector('.list-group');
+  postsContainer.addEventListener('click', (item) => {
     const postId = item.target.getAttribute('data-id');
-    const getPost = find(state.posts, ['id', postId]);
-    getPost.uiReaded = 'fw-normal';
-    state.readedPosts = getPost;
-  };
-
-  allHrefsOnPage.forEach((href) => {
-    href.addEventListener('click', (link) => handler(link));
-  });
-
-  postsButtons.forEach((button) => {
-    button.addEventListener('click', (btn) => handler(btn));
+    if (postId) {
+      const getPost = find(state.posts, ['id', postId]);
+      getPost.uiReaded = 'fw-normal';
+      state.readedPosts = getPost;
+    }
   });
 };
 
@@ -66,17 +57,19 @@ export const updateRss = (state, i18) => {
     state.feeds.forEach((feed) => {
       loadUrl(feed.url)
         .then((rss) => {
-          const dataFeed = parserUrl(rss, i18);
-          if (dataFeed.querySelector('pubDate').textContent !== feed.date) {
-            const newPosts = makePosts(dataFeed, feed.id);
-            feed.date = dataFeed.querySelector('pubDate').textContent;
-            const otherPosts = state.posts.filter((postOth) => postOth.idFeed !== feed.id);
-            state.posts = concat(newPosts, otherPosts).sort((a, b) => a.idFeed - b.idFeed);
+          const [loadFeed, posts] = parserUrl(rss, feed.id);
+          if (loadFeed.date !== feed.date) {
+            feed.date = loadFeed.date;
+            const postsFromStateByFeedId = state.posts.filter((post) => post.idFeed === feed.id);
+            const diff = differenceBy(posts, postsFromStateByFeedId, 'description');
+            state.posts.push(...diff);
           }
+          addListenerForModal(state);
         })
-        .then(() => addListenerForModal(state))
+        .then(() => setTimeout(() => updateRss(state, i18), 5000))
         .catch((error) => { state.urlForm.errors = error.message; });
     });
+  } else {
+    setTimeout(() => updateRss(state, i18), 5000);
   }
-  setTimeout(() => updateRss(state, i18), 5000);
 };

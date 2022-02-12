@@ -2,13 +2,13 @@
 import * as yup from 'yup';
 import { setLocale } from 'yup';
 
-export const validateUrl = (urlForm, i18) => {
+export const validateUrl = (urlForm) => {
   setLocale({
     string: {
-      url: i18.t('urlError'),
+      url: 'urlError',
     },
     mixed: {
-      notOneOf: i18.t('urlExist'),
+      notOneOf: 'urlExist',
     },
   });
   const schema = yup.object({
@@ -17,8 +17,8 @@ export const validateUrl = (urlForm, i18) => {
   return schema.validate(urlForm, { abortEarly: false });
 };
 
-export const handleErrors = (elements, value, i18) => {
-  elements.errorPlace.textContent = value === 'Network Error' ? i18.t('netWorkError') : value;
+export const handleErrors = (elements, i18, value) => {
+  elements.errorPlace.textContent = i18.t(value);
   elements.errorPlace.classList.add('text-danger');
   elements.mainFormUrlInput.classList.add('is-invalid');
   elements.errorPlace.classList.remove('text-success');
@@ -33,25 +33,51 @@ const cleanForm = (elements, i18) => {
   elements.mainFormUrlInput.classList.remove('is-invalid');
 };
 
-export const showPosts = (elements, value) => {
-  const preparePosts = value.map((post) => (
-    `<li class="list-group-item d-flex justify-content-between align-items-start border-0 border-end-0">
-    <a href="${post.link}" class="${post.uiReaded}" data-id="${post.id}"  target="_blank" rel="noopener noreferrer">${post.title}</a>
-    <button type="button" class="btn btn-outline-primary btn-sm" data-id="${post.id}" data-bs-toggle="modal" data-bs-target="#modal">Просмотр</button>
-    </li>`
-  )).join('');
-  const postsTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Посты</h2></div>
-  <ul class="list-group border-0 rounded-0">${preparePosts}</ul></div>`;
-  elements.postsPlace.innerHTML = postsTemplate;
+export const showPosts = (elements, value, i18) => {
+  const preparePosts = value.map((post) => {
+    const li = document.createElement('li');
+    li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
+    const href = document.createElement('a');
+    href.classList.add(`${post.uiReaded}`);
+    href.setAttribute('data-id', `${post.id}`);
+    href.setAttribute('href', `${post.link}`);
+    href.setAttribute('rel', 'noopener noreferrer');
+    href.setAttribute('target', '_blank');
+    href.textContent = post.title;
+    const btn = document.createElement('button');
+    btn.setAttribute('type', 'button');
+    btn.setAttribute('data-id', `${post.id}`);
+    btn.setAttribute('data-bs-toggle', 'modal');
+    btn.setAttribute('data-bs-target', '#modal');
+    btn.textContent = i18.t('posts.readButton');
+    btn.classList.add('btn', 'btn-outline-primary', 'btn-sm');
+    li.append(href);
+    li.append(btn);
+    return li;
+  });
+  const mainDiv = document.createElement('div');
+  mainDiv.classList.add('card', 'border-0');
+  const innerDiv = document.createElement('div');
+  innerDiv.classList.add('card-body');
+  const h2Title = document.createElement('h2');
+  h2Title.classList.add('card-title', 'h4');
+  h2Title.textContent = i18.t('posts.formTitle');
+  const ulForLi = document.createElement('ul');
+  ulForLi.classList.add('list-group', 'border-0', 'rounded-0');
+  mainDiv.append(innerDiv);
+  ulForLi.append(...preparePosts);
+  mainDiv.append(ulForLi);
+  innerDiv.append(h2Title);
+  elements.postsPlace.append(mainDiv);
 };
 
-const showFeeds = (elements, value) => {
+const showFeeds = (elements, value, i18) => {
   const prepareFeed = value.map((feed) => (
     `<li class="list-group-item border-0 border-end-0">
     <h3 class="h6 m-0">${feed.title}</h3>
     <p class="m-0 small text-black-50">${feed.description}</p></li>`
   )).join('');
-  const feedTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">Фиды</h2></div><ul class="list-group border-0 rounded-0">${prepareFeed}</ul></div>`;
+  const feedTemplate = `<div class="card border-0"><div class="card-body"><h2 class="card-title h4">${i18.t('feeds.feedTitle')}</h2></div><ul class="list-group border-0 rounded-0">${prepareFeed}</ul></div>`;
   elements.feedsPlace.innerHTML = feedTemplate;
 };
 
@@ -76,14 +102,14 @@ const disableUi = (elements, value) => {
 export const render = (elements, i18) => (path, value) => {
   switch (path) {
     case 'urlForm.errors':
-      handleErrors(elements, value, i18);
+      handleErrors(elements, i18, value);
       break;
     case 'feeds':
-      showFeeds(elements, value);
+      showFeeds(elements, value, i18);
       cleanForm(elements, i18);
       break;
     case 'posts':
-      showPosts(elements, value);
+      showPosts(elements, value, i18);
       break;
     case 'urlForm.addButtonShow':
       disableUi(elements, value);

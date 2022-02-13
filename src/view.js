@@ -18,7 +18,6 @@ export const validateUrl = (urlForm) => {
 };
 
 export const handleErrors = (elements, i18, value) => {
-  console.log(value);
   elements.errorPlace.textContent = i18.t(value);
   elements.errorPlace.classList.add('text-danger');
   elements.mainFormUrlInput.classList.add('is-invalid');

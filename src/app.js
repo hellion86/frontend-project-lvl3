@@ -56,11 +56,12 @@ const app = (i18) => {
         state.urlForm.status = 'success';
       })
       .catch((error) => {
-        console.log('********debug********');
+        console.log('********debug----start----********');
         console.log(error);
         console.log(error.message);
         console.log(state.urlForm.url);
-        console.log('********debug********');
+        console.log(state.urlForm);
+        console.log('********debug-----end------********');
         state.urlForm.errors = error.message;
         state.urlForm.status = 'error';
       });

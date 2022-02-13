@@ -51,8 +51,8 @@ const app = (i18) => {
         state.feeds.push(feed);
         state.posts.push(...posts);
         addListenerForModal(state);
+        state.urlForm.status = 'success';
       })
-      .then(() => { state.urlForm.status = 'success'; })
       .catch((error) => {
         state.urlForm.errors = error.message;
         state.urlForm.status = 'error';

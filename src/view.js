@@ -18,6 +18,7 @@ export const validateUrl = (urlForm) => {
 };
 
 export const handleErrors = (elements, i18, value) => {
+  console.log(value);
   elements.errorPlace.textContent = i18.t(value);
   elements.errorPlace.classList.add('text-danger');
   elements.mainFormUrlInput.classList.add('is-invalid');
@@ -27,7 +28,7 @@ export const handleErrors = (elements, i18, value) => {
 const cleanForm = (elements, i18) => {
   elements.mainForm.reset();
   elements.mainFormUrlInput.focus();
-  elements.errorPlace.innerHTML = i18.t('urlLoadSuccess');
+  elements.errorPlace.textContent = i18.t('urlLoadSuccess');
   elements.errorPlace.classList.add('text-success');
   elements.errorPlace.classList.remove('text-danger');
   elements.mainFormUrlInput.classList.remove('is-invalid');

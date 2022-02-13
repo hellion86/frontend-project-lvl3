@@ -3,9 +3,10 @@
 import { uniqueId, find, differenceBy } from 'lodash';
 import * as axios from 'axios';
 
-export const parserUrl = (url, setFeedIdmanual = false) => {
+export const parserUrl = (data, url, setFeedIdmanual = false) => {
   const parser = new DOMParser();
-  const dataFromUrl = parser.parseFromString(url.data.contents, 'text/xml');
+  // console.log(data);
+  const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
     throw new Error('badRss');
   } else {
@@ -13,7 +14,7 @@ export const parserUrl = (url, setFeedIdmanual = false) => {
     const feed = {
       date: feedDate,
       id: uniqueId(),
-     // url: url.data.status.url,
+      url,
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
     };
@@ -55,7 +56,7 @@ export const updateRss = (state, i18) => {
     state.feeds.forEach((feed) => {
       loadUrl(feed.url)
         .then((rss) => {
-          const [loadFeed, posts] = parserUrl(rss, feed.id);
+          const [loadFeed, posts] = parserUrl(rss, feed.url, feed.id);
           if (loadFeed.date !== feed.date) {
             feed.date = loadFeed.date;
             const postsFromStateByFeedId = state.posts.filter((post) => post.idFeed === feed.id);

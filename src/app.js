@@ -47,7 +47,7 @@ const app = (i18) => {
     validateUrl(state.urlForm, i18)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
-        const [feed, posts] = parserUrl(rss);
+        const [feed, posts] = parserUrl(rss, state.urlForm.url);
         state.urlForm.loadedUrl.push(state.urlForm.url);
         state.feeds.push(feed);
         state.posts.push(...posts);
@@ -60,7 +60,7 @@ const app = (i18) => {
         state.urlForm.status = 'error';
       });
   });
-  // updateRss(state, i18);
+  updateRss(state, i18);
 };
 
 const runApp = () => {

@@ -43,7 +43,7 @@ const app = (i18) => {
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
     state.urlForm.status = 'loadUrl';
-    validateUrl(state.urlForm, i18)
+    validateUrl(state.urlForm)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
         const [feed, posts] = parserUrl(rss, state.urlForm.url);
@@ -56,14 +56,14 @@ const app = (i18) => {
         state.urlForm.status = 'success';
       })
       .catch((error) => {
-        console.log('********debug----start----********');
-        console.log(error);
-        console.log(error.message);
-        console.log(state.urlForm.url);
-        console.log(state.urlForm);
-        console.log('********debug-----end------********');
-        state.urlForm.errors = error.message;
+        // console.log('********debug----start----********');
+        // console.log(error);
+        // console.log(error.message);
+        // console.log(state.urlForm.url);
+        // console.log(state.urlForm);
+        // console.log('********debug-----end------********');
         state.urlForm.status = 'error';
+        state.urlForm.errors = error.message;
       });
   });
   updateRss(state, i18);

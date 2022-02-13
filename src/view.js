@@ -22,6 +22,8 @@ export const handleErrors = (elements, i18, value) => {
   elements.errorPlace.classList.add('text-danger');
   elements.mainFormUrlInput.classList.add('is-invalid');
   elements.errorPlace.classList.remove('text-success');
+  elements.mainFormUrlInput.removeAttribute('readonly');
+  elements.addFeedButton.removeAttribute('disabled');
 };
 
 const cleanForm = (elements, i18) => {
@@ -104,10 +106,9 @@ const handleProcessState = (elements, processState, i18) => {
     case 'success':
       cleanForm(elements, i18);
       break;
-    case 'error':
-      elements.mainFormUrlInput.removeAttribute('readonly');
-      elements.addFeedButton.removeAttribute('disabled');
-      break;
+    // case 'error':
+      
+    //   break;
     default:
       break;
   }

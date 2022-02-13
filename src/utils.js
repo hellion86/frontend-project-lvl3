@@ -34,10 +34,8 @@ export const parserUrl = (url, setFeedIdmanual = false) => {
 };
 
 export const loadUrl = (link) => {
-  console.log(link);
   const myURL = new URL(link);
-  console.log(myURL);
-  return axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
+  return axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(myURL.href)}`);
 };
 
 export const addListenerForModal = (state) => {

@@ -13,7 +13,7 @@ export const parserUrl = (url, setFeedIdmanual = false) => {
     const feed = {
       date: feedDate,
       id: uniqueId(),
-      url: url.data.status.url,
+     // url: url.data.status.url,
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
     };

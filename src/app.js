@@ -60,7 +60,7 @@ const app = (i18) => {
         state.urlForm.status = 'error';
       });
   });
-  updateRss(state, i18);
+  // updateRss(state, i18);
 };
 
 const runApp = () => {

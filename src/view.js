@@ -27,10 +27,12 @@ export const handleErrors = (elements, i18, value) => {
 const cleanForm = (elements, i18) => {
   elements.mainForm.reset();
   elements.mainFormUrlInput.focus();
-  elements.errorPlace.innerHTML = i18.t('urlLoadSuccess');
+  elements.errorPlace.textContent = i18.t('urlLoadSuccess');
   elements.errorPlace.classList.add('text-success');
   elements.errorPlace.classList.remove('text-danger');
   elements.mainFormUrlInput.classList.remove('is-invalid');
+  elements.mainFormUrlInput.removeAttribute('readonly');
+  elements.addFeedButton.removeAttribute('disabled');
 };
 
 export const showPosts = (elements, value, i18) => {
@@ -59,15 +61,19 @@ export const showPosts = (elements, value, i18) => {
   mainDiv.classList.add('card', 'border-0');
   const innerDiv = document.createElement('div');
   innerDiv.classList.add('card-body');
-  const h2Title = document.createElement('h2');
-  h2Title.classList.add('card-title', 'h4');
-  h2Title.textContent = i18.t('posts.formTitle');
-  const ulForLi = document.createElement('ul');
-  ulForLi.classList.add('list-group', 'border-0', 'rounded-0');
+  const headTitle = document.createElement('h2');
+  headTitle.classList.add('card-title', 'h4');
+  headTitle.textContent = i18.t('posts.formTitle');
+  const ulPostPlace = document.createElement('ul');
+  ulPostPlace.classList.add('list-group', 'border-0', 'rounded-0');
   mainDiv.append(innerDiv);
-  ulForLi.append(...preparePosts);
-  mainDiv.append(ulForLi);
-  innerDiv.append(h2Title);
+  ulPostPlace.append(...preparePosts);
+  mainDiv.append(ulPostPlace);
+  innerDiv.append(headTitle);
+  const isPostOnPage = elements.postsPlace.querySelector('.border-0');
+  if (isPostOnPage) {
+    isPostOnPage.replaceWith(mainDiv);
+  }
   elements.postsPlace.append(mainDiv);
 };
 
@@ -89,13 +95,21 @@ const fillModal = (elements, post) => {
   elements.modalReadButton.setAttribute('href', post.link);
 };
 
-const disableUi = (elements, value) => {
-  if (value) {
-    elements.addFeedButton.setAttribute('disabled', true);
-    elements.mainFormUrlInput.setAttribute('readonly', true);
-  } else {
-    elements.mainFormUrlInput.removeAttribute('readonly');
-    elements.addFeedButton.removeAttribute('disabled');
+const handleProcessState = (elements, processState, i18) => {
+  switch (processState) {
+    case 'loadUrl':
+      elements.addFeedButton.setAttribute('disabled', true);
+      elements.mainFormUrlInput.setAttribute('readonly', true);
+      break;
+    case 'success':
+      cleanForm(elements, i18);
+      break;
+    case 'error':
+      elements.mainFormUrlInput.removeAttribute('readonly');
+      elements.addFeedButton.removeAttribute('disabled');
+      break;
+    default:
+      break;
   }
 };
 
@@ -106,16 +120,15 @@ export const render = (elements, i18) => (path, value) => {
       break;
     case 'feeds':
       showFeeds(elements, value, i18);
-      cleanForm(elements, i18);
       break;
     case 'posts':
       showPosts(elements, value, i18);
       break;
-    case 'urlForm.addButtonShow':
-      disableUi(elements, value);
-      break;
     case 'readedPosts':
       fillModal(elements, value);
+      break;
+    case 'urlForm.status':
+      handleProcessState(elements, value, i18);
       break;
     default:
       break;

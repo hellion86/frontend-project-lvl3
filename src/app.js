@@ -28,10 +28,10 @@ const app = (i18) => {
 
   const state = onChange({
     urlForm: {
+      status: '',
       loadedUrl: [],
       url: '',
-      errors: {},
-      addButtonShow: false,
+      errors: '',
     },
     readedPosts: [],
     feeds: [],
@@ -42,7 +42,7 @@ const app = (i18) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
-    state.urlForm.addButtonShow = true;
+    state.urlForm.status = 'loadUrl';
     validateUrl(state.urlForm, i18)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
@@ -50,12 +50,12 @@ const app = (i18) => {
         state.urlForm.loadedUrl.push(state.urlForm.url);
         state.feeds.push(feed);
         state.posts.push(...posts);
-        state.urlForm.addButtonShow = false;
         addListenerForModal(state);
+        state.urlForm.status = 'success';
       })
       .catch((error) => {
         state.urlForm.errors = error.message;
-        state.urlForm.addButtonShow = false;
+        state.urlForm.status = 'error';
       });
   });
   updateRss(state, i18);

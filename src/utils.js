@@ -3,24 +3,22 @@
 import { uniqueId, find, differenceBy } from 'lodash';
 import * as axios from 'axios';
 
-export const parserUrl = (url, secret = false) => {
+export const parserUrl = (url, setFeedIdmanual = false) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(url.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
     throw new Error('badRss');
   } else {
     const feedDate = dataFromUrl.querySelector('pubDate') ? dataFromUrl.querySelector('pubDate').textContent : new Date();
-    const id1 = uniqueId();
     const feed = {
       date: feedDate,
-      id: id1,
+      id: uniqueId(),
       url: url.data.status.url,
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
     };
-
     const items = dataFromUrl.querySelectorAll('item');
-    const idForPosts = secret ? `${secret}` : feed.id;
+    const idForPosts = setFeedIdmanual ? `${setFeedIdmanual}` : feed.id;
     const posts = Array.from(items).map((item) => (
       {
         id: uniqueId(),

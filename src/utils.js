@@ -33,13 +33,7 @@ export const parserUrl = (data, url, setFeedIdmanual = false) => {
   }
 };
 
-export const loadUrl = (link) => {
-  const myURL = new URL(link);
-  const data = axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(myURL.href)}`);
-  return data
-    .then((flow) => (Promise.resolve(flow)))
-    .catch((err) => (Promise.reject(err)));
-};
+export const loadUrl = (link) => (axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(new URL(link))}`));
 
 export const addListenerForModal = (state) => {
   const postsContainer = document.querySelector('.list-group');

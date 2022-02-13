@@ -5,7 +5,6 @@ import * as axios from 'axios';
 
 export const parserUrl = (data, url, setFeedIdmanual = false) => {
   const parser = new DOMParser();
-  // console.log(data);
   const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
     throw new Error('badRss');

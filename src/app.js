@@ -47,8 +47,6 @@ const app = (i18) => {
       .then((data) => loadUrl(data.url))
       .then((rss) => {
         const [feed, posts] = parserUrl(rss, state.urlForm.url);
-        console.log(feed);
-        console.log(posts);
         state.urlForm.loadedUrl.push(state.urlForm.url);
         state.feeds.push(feed);
         state.posts.push(...posts);
@@ -56,12 +54,6 @@ const app = (i18) => {
         state.urlForm.status = 'success';
       })
       .catch((error) => {
-        // console.log('********debug----start----********');
-        // console.log(error);
-        // console.log(error.message);
-        // console.log(state.urlForm.url);
-        // console.log(state.urlForm);
-        // console.log('********debug-----end------********');
         state.urlForm.status = 'error';
         state.urlForm.errors = error.message;
       });

@@ -45,17 +45,8 @@ const app = (i18) => {
     state.urlForm.status = 'loadUrl';
     validateUrl(state.urlForm, i18)
       .then((data) => loadUrl(data.url))
-      .then((rss) => parserUrl(rss, state.urlForm.url))
-        // {
-        // const [feed, posts] = parserUrl(rss, state.urlForm.url);
-        // state.urlForm.loadedUrl.push(state.urlForm.url);
-        // state.feeds.push(feed);
-        // state.posts.push(...posts);
-        // addListenerForModal(state);
-        // state.urlForm.status = 'success';
-      // })
-      .then((parseRes) => {
-        const [feed, posts] = parseRes;
+      .then((rss) => {
+        const [feed, posts] = parserUrl(rss, state.urlForm.url);
         state.urlForm.loadedUrl.push(state.urlForm.url);
         state.feeds.push(feed);
         state.posts.push(...posts);

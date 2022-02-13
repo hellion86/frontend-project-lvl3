@@ -66,7 +66,10 @@ export const updateRss = (state, i18) => {
           addListenerForModal(state);
         })
         .then(() => setTimeout(() => updateRss(state, i18), 5000))
-        .catch((error) => { state.urlForm.errors = error.message; });
+        .catch((error) => {
+          state.urlForm.status = 'error';
+          state.urlForm.errors = error.message;
+        });
     });
   } else {
     setTimeout(() => updateRss(state, i18), 5000);

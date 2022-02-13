@@ -42,7 +42,6 @@ const app = (i18) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
-    console.log(state.urlForm.url);
     state.urlForm.status = 'loadUrl';
     validateUrl(state.urlForm, i18)
       .then((data) => loadUrl(data.url))
@@ -53,9 +52,10 @@ const app = (i18) => {
         state.posts.push(...posts);
         addListenerForModal(state);
         state.urlForm.status = 'success';
+        console.log(state);
       })
       .catch((error) => {
-        console.log(error);
+        console.log(state);
         state.urlForm.errors = error.message;
         state.urlForm.status = 'error';
       });

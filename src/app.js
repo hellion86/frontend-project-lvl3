@@ -42,6 +42,7 @@ const app = (i18) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
+    console.log(state.urlForm.url);
     state.urlForm.status = 'loadUrl';
     validateUrl(state.urlForm, i18)
       .then((data) => loadUrl(data.url))

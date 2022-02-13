@@ -25,10 +25,9 @@ export const handleErrors = (elements, i18, value) => {
 };
 
 const cleanForm = (elements, i18) => {
-  console.log('***!****');
   elements.mainForm.reset();
   elements.mainFormUrlInput.focus();
-  elements.errorPlace.textContent = i18.t('urlLoadSuccess');
+  elements.errorPlace.innerHTML = i18.t('urlLoadSuccess');
   elements.errorPlace.classList.add('text-success');
   elements.errorPlace.classList.remove('text-danger');
   elements.mainFormUrlInput.classList.remove('is-invalid');

@@ -46,7 +46,6 @@ const app = (i18) => {
     validateUrl(state.urlForm)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
-        console.log(rss);
         const [feed, posts] = parserRss(rss, state.urlForm.url);
         state.urlForm.loadedUrl.push(state.urlForm.url);
         state.feeds.push(feed);

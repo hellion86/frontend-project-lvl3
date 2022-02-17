@@ -65,11 +65,16 @@ export const parserRss = (data, url, setFeedIdmanual = false) => {
 // })
 
 export const loadUrl = (link) => (
-
-    axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(new URL(link))}`)
-      .then((response) => (response))
-      .catch((err) => (err))
-
+    new Promise((resolve, reject) => {
+      const flow = axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(new URL(link))}`);
+      flow.then((data) => {
+        if (data.status === 200) {
+          resolve(data);
+        } else {
+          reject(data);
+        }
+      });
+    })
   // console.log(axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`));
 );
 

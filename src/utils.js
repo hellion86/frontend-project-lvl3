@@ -35,14 +35,14 @@ export const parserRss = (data, url, setFeedIdmanual = false) => {
 
 export const loadUrl = (link) => (
   new Promise((resolve, reject) => {
-    const flow = axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
+  const flow = axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(new URL(link))}`);
     flow.then((data) => {
       if (data.status === 200) {
         resolve(data);
-      } else {
-        reject(data);
       }
-    });
+    })
+    .catch((err) => (reject(err)));
+    // resolve(flow);
   })
 );
 

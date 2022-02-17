@@ -33,49 +33,17 @@ export const parserRss = (data, url, setFeedIdmanual = false) => {
   }
 };
 
-// function request(url) {
-//   return new Promise(function (resolve, reject) {
-//     const xhr = new XMLHttpRequest();
-//     xhr.timeout = 2000;
-//     xhr.onreadystatechange = function(e) {
-//       if (xhr.readyState === 4) {
-//         if (xhr.status === 200) {
-//           resolve(xhr.response)
-//         } else {
-//           reject(xhr.status)
-//         }
-//       }
-//     }
-//     xhr.ontimeout = function () {
-//       reject('timeout')
-//     }
-//     xhr.open('get', url, true)
-//     xhr.send();
-//   })
-// }
-
-// return axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${darkSkyAPIKey}`, {json: true})
-// .then(response => {
-//     if(!response.data)
-//       throw Error('No location found.')
-//     return response.data;
-// }).catch(error => {
-//     console.log(error);
-//     throw error;
-// })
-
 export const loadUrl = (link) => (
-    new Promise((resolve, reject) => {
-      const flow = axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(new URL(link))}`);
-      flow.then((data) => {
-        if (data.status === 200) {
-          resolve(data);
-        } else {
-          reject(data);
-        }
-      });
-    })
-  // console.log(axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`));
+  new Promise((resolve, reject) => {
+    const flow = axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
+    flow.then((data) => {
+      if (data.status === 200) {
+        resolve(data);
+      } else {
+        reject(data);
+      }
+    });
+  })
 );
 
 export const addListenerForModal = (state) => {

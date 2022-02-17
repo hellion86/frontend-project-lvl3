@@ -1,6 +1,7 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
 import { setLocale } from 'yup';
+import { uniqueId } from 'lodash';
 
 export const validateUrl = (urlForm) => {
   setLocale({
@@ -37,18 +38,20 @@ const cleanForm = (elements, i18) => {
 
 export const showPosts = (elements, value, i18) => {
   const preparePosts = value.map((post) => {
+    const idForPost = uniqueId();
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const href = document.createElement('a');
     href.classList.add(`${post.uiReaded}`);
-    href.setAttribute('data-id', `${post.id}`);
+    // href.classList.add('fw-bold');
+    href.setAttribute('data-id', `${idForPost}`);
     href.setAttribute('href', `${post.link}`);
     href.setAttribute('rel', 'noopener noreferrer');
     href.setAttribute('target', '_blank');
     href.textContent = post.title;
     const btn = document.createElement('button');
     btn.setAttribute('type', 'button');
-    btn.setAttribute('data-id', `${post.id}`);
+    btn.setAttribute('data-id', `${idForPost}`);
     btn.setAttribute('data-bs-toggle', 'modal');
     btn.setAttribute('data-bs-target', '#modal');
     btn.textContent = i18.t('posts.readButton');
@@ -88,6 +91,7 @@ const showFeeds = (elements, value, i18) => {
 };
 
 const fillModal = (elements, post) => {
+  console.log(post);
   const postOnDocument = document.querySelector(`[data-id="${post.id}"]`);
   postOnDocument.classList.replace('fw-bold', 'fw-normal');
   elements.modalTitle.textContent = post.title;

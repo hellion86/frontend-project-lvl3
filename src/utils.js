@@ -21,7 +21,7 @@ export const parserRss = (data, url, setFeedIdmanual = false) => {
     const idForPosts = setFeedIdmanual ? `${setFeedIdmanual}` : feed.id;
     const posts = Array.from(items).map((item) => (
       {
-        id: uniqueId(),
+        // id: uniqueId(),
         idFeed: idForPosts,
         title: item.querySelector('title').textContent,
         description: item.querySelector('description').textContent,
@@ -45,11 +45,14 @@ export const loadUrl = (link) => {
 };
 
 export const addListenerForModal = (state) => {
-  const postsContainer = document.querySelector('.list-group');
+  const postsContainer = document.querySelector('.posts');
   postsContainer.addEventListener('click', (item) => {
+    // console.log(item);
     const postId = item.target.getAttribute('data-id');
+    // console.log(postId);
     if (postId) {
       const currentPost = find(state.posts, ['id', postId]);
+      console.log(currentPost);
       currentPost.uiReaded = 'fw-normal';
       state.readedPost = currentPost;
     }
@@ -68,7 +71,7 @@ export const updateRss = (state, i18) => {
             const diff = differenceBy(posts, postsFromStateByFeedId, 'description');
             state.posts.push(...diff);
           }
-          addListenerForModal(state);
+           // addListenerForModal(state);
         })
         .then(() => setTimeout(() => updateRss(state, i18), 5000))
         .catch((error) => {

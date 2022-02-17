@@ -50,7 +50,6 @@ const app = (i18) => {
         state.urlForm.loadedUrl.push(state.urlForm.url);
         state.feeds.push(feed);
         state.posts.push(...posts);
-        addListenerForModal(state);
         state.urlForm.status = 'success';
       })
       .catch((error) => {
@@ -59,6 +58,7 @@ const app = (i18) => {
       });
   });
   updateRss(state, i18);
+  addListenerForModal(state);
 };
 
 const runApp = () => {

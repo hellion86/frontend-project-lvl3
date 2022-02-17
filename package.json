@@ -1,7 +1,7 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "[![Actions Status](https://github.com/hellion86/frontend-project-lvl3/workflows/hexlet-check/badge.svg)](https://github.com/hellion86/frontend-project-lvl3/actions)",
+  "description": "hexlet 3 project",
   "main": "src/app.js",
   "scripts": {
     "build": "webpack --mode=production --node-env=production",

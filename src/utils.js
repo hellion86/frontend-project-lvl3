@@ -3,7 +3,7 @@
 import { uniqueId, find, differenceBy } from 'lodash';
 import * as axios from 'axios';
 
-export const parserUrl = (data, url, setFeedIdmanual = false) => {
+export const parserRss = (data, url, setFeedIdmanual = false) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
@@ -33,16 +33,54 @@ export const parserUrl = (data, url, setFeedIdmanual = false) => {
   }
 };
 
-export const loadUrl = (link) => (axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`));
+// function request(url) {
+//   return new Promise(function (resolve, reject) {
+//     const xhr = new XMLHttpRequest();
+//     xhr.timeout = 2000;
+//     xhr.onreadystatechange = function(e) {
+//       if (xhr.readyState === 4) {
+//         if (xhr.status === 200) {
+//           resolve(xhr.response)
+//         } else {
+//           reject(xhr.status)
+//         }
+//       }
+//     }
+//     xhr.ontimeout = function () {
+//       reject('timeout')
+//     }
+//     xhr.open('get', url, true)
+//     xhr.send();
+//   })
+// }
+
+// return axios.get(`https://api.mapbox.com/geocoding/v5/mapbox.places/${longitude},${latitude}.json?access_token=${darkSkyAPIKey}`, {json: true})
+// .then(response => {
+//     if(!response.data)
+//       throw Error('No location found.')
+//     return response.data;
+// }).catch(error => {
+//     console.log(error);
+//     throw error;
+// })
+
+export const loadUrl = (link) => (
+
+    axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(new URL(link))}`)
+      .then((response) => (response))
+      .catch((err) => (err))
+
+  // console.log(axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`));
+);
 
 export const addListenerForModal = (state) => {
   const postsContainer = document.querySelector('.list-group');
   postsContainer.addEventListener('click', (item) => {
     const postId = item.target.getAttribute('data-id');
     if (postId) {
-      const getPost = find(state.posts, ['id', postId]);
-      getPost.uiReaded = 'fw-normal';
-      state.readedPosts = getPost;
+      const currentPost = find(state.posts, ['id', postId]);
+      currentPost.uiReaded = 'fw-normal';
+      state.readedPost = currentPost;
     }
   });
 };
@@ -52,7 +90,7 @@ export const updateRss = (state, i18) => {
     state.feeds.forEach((feed) => {
       loadUrl(feed.url)
         .then((rss) => {
-          const [loadFeed, posts] = parserUrl(rss, feed.url, feed.id);
+          const [loadFeed, posts] = parserRss(rss, feed.url, feed.id);
           if (loadFeed.date !== feed.date) {
             feed.date = loadFeed.date;
             const postsFromStateByFeedId = state.posts.filter((post) => post.idFeed === feed.id);

@@ -17,7 +17,7 @@ export const validateUrl = (urlForm) => {
   return schema.validate(urlForm, { abortEarly: false });
 };
 
-export const handleErrors = (elements, i18, value) => {
+export const handleErrors = (elements, value, i18) => {
   elements.errorPlace.textContent = i18.t(value);
   elements.errorPlace.classList.add('text-danger');
   elements.mainFormUrlInput.classList.add('is-invalid');
@@ -116,7 +116,7 @@ const handleProcessState = (elements, processState, i18) => {
 export const render = (elements, i18) => (path, value) => {
   switch (path) {
     case 'urlForm.errors':
-      handleErrors(elements, i18, value);
+      handleErrors(elements, value, i18);
       break;
     case 'feeds':
       showFeeds(elements, value, i18);
@@ -124,7 +124,7 @@ export const render = (elements, i18) => (path, value) => {
     case 'posts':
       showPosts(elements, value, i18);
       break;
-    case 'readedPosts':
+    case 'readedPost':
       fillModal(elements, value);
       break;
     case 'urlForm.status':

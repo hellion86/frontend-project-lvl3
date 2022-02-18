@@ -6,27 +6,30 @@ import * as axios from 'axios';
 export const parserRss = (data, url, setFeedIdmanual = false) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
+  // console.log(dataFromUrl);
   if (dataFromUrl.querySelector('parsererror')) {
     throw new Error('badRss');
   } else {
-    const feedDate = dataFromUrl.querySelector('pubDate') ? dataFromUrl.querySelector('pubDate').textContent : new Date();
+    // const feedDate = dataFromUrl.querySelector('pubDate') ? dataFromUrl.querySelector('pubDate').textContent : new Date();
     const feed = {
-      date: feedDate,
-      id: uniqueId(),
-      url,
+      // date: feedDate,
+      // id: uniqueId(),
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
+      url,
     };
     const items = dataFromUrl.querySelectorAll('item');
-    const idForPosts = setFeedIdmanual ? `${setFeedIdmanual}` : feed.id;
+    // const idForPosts = setFeedIdmanual ? `${setFeedIdmanual}` : feed.id;
     const posts = Array.from(items).map((item) => (
       {
         // id: uniqueId(),
-        idFeed: idForPosts,
+        // idFeed: idForPosts,
         title: item.querySelector('title').textContent,
+        guid: item.querySelector('guid').textContent,
         description: item.querySelector('description').textContent,
         link: item.querySelector('link').textContent,
-        uiReaded: 'fw-bold',
+        pubDate: item.querySelector('pubDate').textContent,
+        // uiReaded: 'fw-bold',
       }
     ));
     return [feed, posts];
@@ -47,15 +50,19 @@ export const loadUrl = (link) => {
 export const addListenerForModal = (state) => {
   const postsContainer = document.querySelector('.posts');
   postsContainer.addEventListener('click', (item) => {
-    // console.log(item);
+   // console.log(item);
     const postId = item.target.getAttribute('data-id');
-    // console.log(postId);
-    if (postId) {
-      const currentPost = find(state.posts, ['id', postId]);
-      console.log(currentPost);
-      currentPost.uiReaded = 'fw-normal';
-      state.readedPost = currentPost;
-    }
+    const currentPost = document.querySelector(`[data-id="${postId}"]`);
+    // console.log(currentPost.getAttribute('href'));
+    // if (postId) {
+
+    const findInState = find(state.posts, ['link', currentPost.getAttribute('href')]);
+    const postState = {}
+    // console.log(findInState);
+      // console.log(currentPost);
+      // currentPost.uiReaded = 'fw-normal';
+      // state.readedPost = currentPost;
+    // }
   });
 };
 

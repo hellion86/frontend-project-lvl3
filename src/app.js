@@ -33,6 +33,7 @@ const app = (i18) => {
       url: '',
       errors: '',
     },
+    uiStatePosts: [],
     readedPost: '',
     feeds: [],
     posts: [],
@@ -48,6 +49,8 @@ const app = (i18) => {
       .then((rss) => {
         const [feed, posts] = parserRss(rss, state.urlForm.url);
         state.urlForm.loadedUrl.push(state.urlForm.url);
+        console.log(...posts);
+        // console.log(feed);
         state.feeds.push(feed);
         state.posts.push(...posts);
         state.urlForm.status = 'success';
@@ -57,7 +60,7 @@ const app = (i18) => {
         state.urlForm.errors = error.message;
       });
   });
-  updateRss(state, i18);
+  // updateRss(state, i18);
   addListenerForModal(state);
 };
 

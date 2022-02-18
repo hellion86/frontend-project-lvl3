@@ -42,8 +42,8 @@ export const showPosts = (elements, value, i18) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const href = document.createElement('a');
-    href.classList.add(`${post.uiReaded}`);
-    // href.classList.add('fw-bold');
+    // href.classList.add(`${post.uiReaded}`);
+    href.classList.add('fw-bold');
     href.setAttribute('data-id', `${idForPost}`);
     href.setAttribute('href', `${post.link}`);
     href.setAttribute('rel', 'noopener noreferrer');
@@ -91,7 +91,7 @@ const showFeeds = (elements, value, i18) => {
 };
 
 const fillModal = (elements, post) => {
-  console.log(post);
+  // console.log(post);
   const postOnDocument = document.querySelector(`[data-id="${post.id}"]`);
   postOnDocument.classList.replace('fw-bold', 'fw-normal');
   elements.modalTitle.textContent = post.title;

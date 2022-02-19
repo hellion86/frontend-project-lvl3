@@ -1,35 +1,28 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
-import { uniqueId, find, differenceBy } from 'lodash';
+import { find, differenceBy } from 'lodash';
 import * as axios from 'axios';
 
 export const parserRss = (data, url, setFeedIdmanual = false) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
-  // console.log(dataFromUrl);
   if (dataFromUrl.querySelector('parsererror')) {
     throw new Error('badRss');
   } else {
     // const feedDate = dataFromUrl.querySelector('pubDate') ? dataFromUrl.querySelector('pubDate').textContent : new Date();
     const feed = {
-      // date: feedDate,
-      // id: uniqueId(),
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
       url,
     };
-    const items = dataFromUrl.querySelectorAll('item');
-    // const idForPosts = setFeedIdmanual ? `${setFeedIdmanual}` : feed.id;
-    const posts = Array.from(items).map((item) => (
+    const dataFromFlow = dataFromUrl.querySelectorAll('item');
+    const posts = Array.from(dataFromFlow).map((item) => (
       {
-        // id: uniqueId(),
-        // idFeed: idForPosts,
         title: item.querySelector('title').textContent,
         guid: item.querySelector('guid').textContent,
         description: item.querySelector('description').textContent,
         link: item.querySelector('link').textContent,
         pubDate: item.querySelector('pubDate').textContent,
-        // uiReaded: 'fw-bold',
       }
     ));
     return [feed, posts];
@@ -47,22 +40,19 @@ export const loadUrl = (link) => {
   });
 };
 
-export const addListenerForModal = (state) => {
+export const addListenerForModal = (state, elements) => {
   const postsContainer = document.querySelector('.posts');
   postsContainer.addEventListener('click', (item) => {
-   // console.log(item);
     const postId = item.target.getAttribute('data-id');
-    const currentPost = document.querySelector(`[data-id="${postId}"]`);
-    // console.log(currentPost.getAttribute('href'));
-    // if (postId) {
-
-    const findInState = find(state.posts, ['link', currentPost.getAttribute('href')]);
-    const postState = {}
-    // console.log(findInState);
-      // console.log(currentPost);
-      // currentPost.uiReaded = 'fw-normal';
-      // state.readedPost = currentPost;
-    // }
+    const postOnPage = document.querySelector(`[data-id="${postId}"]`);
+    if (postId) {
+      const postInState = find(state.posts, ['id', postId]);
+      postInState.readed = true;
+      postOnPage.classList.replace('fw-bold', 'fw-normal');
+      elements.modalTitle.textContent = postInState.title;
+      elements.modalBody.textContent = postInState.description;
+      elements.modalReadButton.setAttribute('href', postInState.link);
+    }
   });
 };
 
@@ -78,7 +68,6 @@ export const updateRss = (state, i18) => {
             const diff = differenceBy(posts, postsFromStateByFeedId, 'description');
             state.posts.push(...diff);
           }
-           // addListenerForModal(state);
         })
         .then(() => setTimeout(() => updateRss(state, i18), 5000))
         .catch((error) => {

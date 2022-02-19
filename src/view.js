@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
 import { setLocale } from 'yup';
-import { uniqueId } from 'lodash';
+// import { uniqueId } from 'lodash';
 
 export const validateUrl = (urlForm) => {
   setLocale({
@@ -37,21 +37,23 @@ const cleanForm = (elements, i18) => {
 };
 
 export const showPosts = (elements, value, i18) => {
+  console.log(value);
   const preparePosts = value.map((post) => {
-    const idForPost = uniqueId();
+    // const idForPost = uniqueId();
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const href = document.createElement('a');
     // href.classList.add(`${post.uiReaded}`);
-    href.classList.add('fw-bold');
-    href.setAttribute('data-id', `${idForPost}`);
+    const typeOfText = post.readed ? 'fw-normal' : 'fw-bold';
+    href.classList.add(typeOfText);
+    href.setAttribute('data-id', `${post.id}`);
     href.setAttribute('href', `${post.link}`);
     href.setAttribute('rel', 'noopener noreferrer');
     href.setAttribute('target', '_blank');
     href.textContent = post.title;
     const btn = document.createElement('button');
     btn.setAttribute('type', 'button');
-    btn.setAttribute('data-id', `${idForPost}`);
+    btn.setAttribute('data-id', `${post.id}`);
     btn.setAttribute('data-bs-toggle', 'modal');
     btn.setAttribute('data-bs-target', '#modal');
     btn.textContent = i18.t('posts.readButton');
@@ -90,14 +92,14 @@ const showFeeds = (elements, value, i18) => {
   elements.feedsPlace.innerHTML = feedTemplate;
 };
 
-const fillModal = (elements, post) => {
-  // console.log(post);
-  const postOnDocument = document.querySelector(`[data-id="${post.id}"]`);
-  postOnDocument.classList.replace('fw-bold', 'fw-normal');
-  elements.modalTitle.textContent = post.title;
-  elements.modalBody.textContent = post.description;
-  elements.modalReadButton.setAttribute('href', post.link);
-};
+// const fillModal = (elements, post) => {
+//   // console.log(post);
+//   const postOnDocument = document.querySelector(`[data-id="${post.id}"]`);
+//   postOnDocument.classList.replace('fw-bold', 'fw-normal');
+//   elements.modalTitle.textContent = post.title;
+//   elements.modalBody.textContent = post.description;
+//   elements.modalReadButton.setAttribute('href', post.link);
+// };
 
 const handleProcessState = (elements, processState, i18) => {
   switch (processState) {
@@ -126,14 +128,16 @@ export const render = (elements, i18) => (path, value) => {
       showFeeds(elements, value, i18);
       break;
     case 'posts':
+      // console.log(value);
       showPosts(elements, value, i18);
-      break;
-    case 'readedPost':
-      fillModal(elements, value);
       break;
     case 'urlForm.status':
       handleProcessState(elements, value, i18);
       break;
+    // case 'data':
+    //   console.log(value);
+    //   showPosts(elements, value, i18);
+    //   break;
     default:
       break;
   }

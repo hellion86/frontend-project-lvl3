@@ -2,6 +2,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import onChange from 'on-change';
 import i18n from 'i18next';
+import { uniqueId } from 'lodash';
 import {
   render, validateUrl,
 } from './view.js';
@@ -33,11 +34,12 @@ const app = (i18) => {
       url: '',
       errors: '',
     },
-    uiStatePosts: [],
     readedPost: '',
     feeds: [],
     posts: [],
   }, render(elements, i18));
+
+  addListenerForModal(state, elements);
 
   elements.mainForm.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -49,10 +51,9 @@ const app = (i18) => {
       .then((rss) => {
         const [feed, posts] = parserRss(rss, state.urlForm.url);
         state.urlForm.loadedUrl.push(state.urlForm.url);
-        console.log(...posts);
-        // console.log(feed);
+        const addIdtoPosts = posts.map((item) => ({ ...item, id: uniqueId() }));
         state.feeds.push(feed);
-        state.posts.push(...posts);
+        state.posts.push(...addIdtoPosts);
         state.urlForm.status = 'success';
       })
       .catch((error) => {
@@ -61,7 +62,6 @@ const app = (i18) => {
       });
   });
   // updateRss(state, i18);
-  addListenerForModal(state);
 };
 
 const runApp = () => {

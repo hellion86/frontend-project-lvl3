@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
 import { setLocale } from 'yup';
-// import { uniqueId } from 'lodash';
+import { find } from 'lodash';
 
 export const validateUrl = (urlForm) => {
   setLocale({
@@ -37,15 +37,14 @@ const cleanForm = (elements, i18) => {
 };
 
 export const showPosts = (elements, value, i18) => {
-  console.log(value);
-  const preparePosts = value.map((post) => {
-    // const idForPost = uniqueId();
+  const [postsState, ...posts] = value;
+   const preparePosts = posts.map((post) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const href = document.createElement('a');
-    // href.classList.add(`${post.uiReaded}`);
-    const typeOfText = post.readed ? 'fw-normal' : 'fw-bold';
-    href.classList.add(typeOfText);
+    const getPostUiState = find(postsState.uiState, ['id', post.id]);
+    const typeTextPost = getPostUiState.typeOfName;
+    href.classList.add(typeTextPost);
     href.setAttribute('data-id', `${post.id}`);
     href.setAttribute('href', `${post.link}`);
     href.setAttribute('rel', 'noopener noreferrer');
@@ -92,15 +91,6 @@ const showFeeds = (elements, value, i18) => {
   elements.feedsPlace.innerHTML = feedTemplate;
 };
 
-// const fillModal = (elements, post) => {
-//   // console.log(post);
-//   const postOnDocument = document.querySelector(`[data-id="${post.id}"]`);
-//   postOnDocument.classList.replace('fw-bold', 'fw-normal');
-//   elements.modalTitle.textContent = post.title;
-//   elements.modalBody.textContent = post.description;
-//   elements.modalReadButton.setAttribute('href', post.link);
-// };
-
 const handleProcessState = (elements, processState, i18) => {
   switch (processState) {
     case 'loadUrl':
@@ -128,16 +118,11 @@ export const render = (elements, i18) => (path, value) => {
       showFeeds(elements, value, i18);
       break;
     case 'posts':
-      // console.log(value);
       showPosts(elements, value, i18);
       break;
     case 'urlForm.status':
       handleProcessState(elements, value, i18);
       break;
-    // case 'data':
-    //   console.log(value);
-    //   showPosts(elements, value, i18);
-    //   break;
     default:
       break;
   }

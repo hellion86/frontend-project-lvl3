@@ -3,13 +3,12 @@
 import { find, differenceBy } from 'lodash';
 import * as axios from 'axios';
 
-export const parserRss = (data, url, setFeedIdmanual = false) => {
+export const parserRss = (data, url) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
     throw new Error('badRss');
   } else {
-    // const feedDate = dataFromUrl.querySelector('pubDate') ? dataFromUrl.querySelector('pubDate').textContent : new Date();
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
@@ -43,15 +42,17 @@ export const loadUrl = (link) => {
 export const addListenerForModal = (state, elements) => {
   const postsContainer = document.querySelector('.posts');
   postsContainer.addEventListener('click', (item) => {
+    const [postsState] = state.posts;
     const postId = item.target.getAttribute('data-id');
-    const postOnPage = document.querySelector(`[data-id="${postId}"]`);
+    const postOnPage = postsContainer.querySelector(`[data-id="${postId}"]`);
+    const postDataFromState = find(state.posts, ['id', postId]);
+    const postUiState = find(postsState.uiState, ['id', postId]);
+    postUiState.typeOfName = 'fw-normal';
     if (postId) {
-      const postInState = find(state.posts, ['id', postId]);
-      postInState.readed = true;
       postOnPage.classList.replace('fw-bold', 'fw-normal');
-      elements.modalTitle.textContent = postInState.title;
-      elements.modalBody.textContent = postInState.description;
-      elements.modalReadButton.setAttribute('href', postInState.link);
+      elements.modalTitle.textContent = postDataFromState.title;
+      elements.modalBody.textContent = postDataFromState.description;
+      elements.modalReadButton.setAttribute('href', postDataFromState.link);
     }
   });
 };

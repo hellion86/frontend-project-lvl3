@@ -1,9 +1,11 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
-import { find, differenceBy } from 'lodash';
+import {
+  find, differenceBy, concat, uniqueId,
+} from 'lodash';
 import * as axios from 'axios';
 
-export const parserRss = (data, url) => {
+export const parserRss = (data) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(data.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
@@ -12,7 +14,7 @@ export const parserRss = (data, url) => {
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
-      url,
+      url: data.data.status.url,
     };
     const dataFromFlow = dataFromUrl.querySelectorAll('item');
     const posts = Array.from(dataFromFlow).map((item) => (
@@ -57,26 +59,20 @@ export const addListenerForModal = (state, elements) => {
   });
 };
 
-export const updateRss = (state, i18) => {
-  if (state.urlForm.loadedUrl.length !== 0) {
-    state.feeds.forEach((feed) => {
-      loadUrl(feed.url)
-        .then((rss) => {
-          const [loadFeed, posts] = parserRss(rss, feed.url, feed.id);
-          if (loadFeed.date !== feed.date) {
-            feed.date = loadFeed.date;
-            const postsFromStateByFeedId = state.posts.filter((post) => post.idFeed === feed.id);
-            const diff = differenceBy(posts, postsFromStateByFeedId, 'description');
-            state.posts.push(...diff);
-          }
-        })
-        .then(() => setTimeout(() => updateRss(state, i18), 5000))
-        .catch((error) => {
-          state.urlForm.status = 'error';
-          state.urlForm.errors = error.message;
+export const updateRss = (state) => {
+  const loadAll = Promise.all(state.urlForm.loadedUrl.map((link) => loadUrl(link)));
+    loadAll.then((data) => {
+      const parsedData = data.map((flow) => parserRss(flow));
+      const takePosts = parsedData.map((item) => item[1]);
+      const diff = differenceBy(concat(...takePosts), state.posts, 'title');
+      if (diff.length > 0) {
+        const addIdtodiff = diff.map((item) => ({ ...item, id: uniqueId() }));
+        const [postsState] = state.posts;
+        addIdtodiff.forEach((post) => {
+          postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
         });
-    });
-  } else {
-    setTimeout(() => updateRss(state, i18), 5000);
-  }
+        state.posts.push(...addIdtodiff);
+      }
+    })
+    .then(() => setTimeout(() => updateRss(state), 5000));
 };

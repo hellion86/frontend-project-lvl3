@@ -48,7 +48,7 @@ const app = (i18) => {
     validateUrl(state.urlForm)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
-        const [feed, posts] = parserRss(rss, state.urlForm.url);
+        const [feed, posts] = parserRss(rss);
         const [postsState] = state.posts;
         state.urlForm.loadedUrl.push(state.urlForm.url);
         const addIdtoPosts = posts.map((item) => ({ ...item, id: uniqueId() }));
@@ -64,7 +64,7 @@ const app = (i18) => {
         state.urlForm.errors = error.message;
       });
   });
-  // updateRss(state, i18);
+ updateRss(state);
 };
 
 const runApp = () => {

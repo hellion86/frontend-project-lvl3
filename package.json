@@ -1,7 +1,7 @@
 {
   "name": "@hexlet/code",
   "version": "1.0.0",
-  "description": "hexlet 3 project",
+  "description": "",
   "main": "src/app.js",
   "scripts": {
     "build": "webpack --mode=production --node-env=production",

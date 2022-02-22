@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 import _ from 'lodash';
-import * as axios from 'axios';
+import axios from 'axios';
 
 export const parserRss = (data) => {
   const parser = new DOMParser();

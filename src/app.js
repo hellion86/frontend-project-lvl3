@@ -45,6 +45,7 @@ const app = (i18) => {
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
     state.urlForm.status = 'loadUrl';
+    console.log(state.urlForm.url);
     validateUrl(state.urlForm)
       .then((data) => loadUrl(data.url))
       .then((rss) => {
@@ -60,11 +61,14 @@ const app = (i18) => {
         state.urlForm.status = 'success';
       })
       .catch((error) => {
+        console.log('!!!!!start debug!!!!!');
+        console.log(error);
+        console.log('!!!!!end debug!!!!!');
         state.urlForm.status = 'error';
         state.urlForm.errors = error.message;
       });
   });
- updateRss(state);
+ // updateRss(state);
 };
 
 const runApp = () => {

@@ -55,6 +55,7 @@ const app = (i18) => {
         });
         state.feeds.push(feed);
         state.posts.push(...addIdtoPosts);
+        elements.mainForm.reset();
         state.urlForm.status = 'success';
       })
       .catch((error) => {

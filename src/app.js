@@ -43,7 +43,7 @@ const app = (i18) => {
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
     state.urlForm.status = 'loadUrl';
-    e.target.reset();
+    e.target.url.value = '';
     validateUrl(state.urlForm)
       .then((data) => loadUrl(data.url))
       .then((rss) => {

@@ -70,6 +70,7 @@ export const updateRss = (state) => {
           postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
         });
         state.posts.push(...addIdtodiff);
+        state.urlForm.status = 'success';
       }
     })
     .then(() => setTimeout(() => updateRss(state), 5000))

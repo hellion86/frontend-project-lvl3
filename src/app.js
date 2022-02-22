@@ -1,5 +1,3 @@
-// import 'bootstrap/dist/css/bootstrap.min.css';
-// import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import onChange from 'on-change';
 import i18n from 'i18next';
 import _ from 'lodash';
@@ -60,9 +58,6 @@ const app = (i18) => {
         state.urlForm.status = 'success';
       })
       .catch((error) => {
-        console.log('start debug !!!!!');
-        console.log(error);
-        console.log('end debug!!!!!');
         state.urlForm.status = 'error';
         state.urlForm.errors = error.message;
       });

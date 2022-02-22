@@ -26,32 +26,17 @@ export const parserRss = (data) => {
     return [feed, posts];
   }
 };
-const generateUrl = (url) => {
-  const baseUrl = new URL('https://hexlet-allorigins.herokuapp.com');
-  baseUrl.pathname = 'get';
-  baseUrl.searchParams.append('disableCache', true);
-  baseUrl.searchParams.append('charset', 'utf-8');
-  baseUrl.searchParams.append('url', url);
-  return baseUrl.toString();
-};
-export const loadUrl = (link) => new Promise((resolve) => {
-  resolve(
-    axios.get(
-      generateUrl(link),
-    ),
-  );
-});
 
-// {
-//   const mainUrl = new URL('/get?', 'https://hexlet-allorigins.herokuapp.com');
-//   mainUrl.searchParams.append('disableCache', true);
-//   mainUrl.searchParams.append('charset', 'utf-8');
-//   mainUrl.searchParams.append('url', link);
-//   return new Promise((resolve, reject) => {
-//     const flow = axios.get(mainUrl.toString());
-//     flow.then((data) => resolve(data)).catch((err) => reject(err));
-//   });
-// };
+export const loadUrl = (link) => {
+  const mainUrl = new URL('/get?', 'https://hexlet-allorigins.herokuapp.com');
+  mainUrl.searchParams.append('disableCache', true);
+  mainUrl.searchParams.append('charset', 'utf-8');
+  mainUrl.searchParams.append('url', link);
+  return new Promise((resolve, reject) => {
+    const flow = axios.get(mainUrl.toString());
+    flow.then((data) => resolve(data)).catch((err) => reject(err));
+  });
+};
 
 export const addListenerForModal = (state, elements) => {
   const postsContainer = document.querySelector('.posts');

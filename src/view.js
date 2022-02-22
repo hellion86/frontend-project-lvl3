@@ -37,7 +37,7 @@ const cleanForm = (elements, i18) => {
 
 export const showPosts = (elements, value, i18) => {
   const [postsState, ...posts] = value;
-   const preparePosts = posts.map((post) => {
+  const preparePosts = posts.map((post) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const href = document.createElement('a');

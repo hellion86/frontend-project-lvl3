@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "RSS reader",
   "main": "src/app.js",
-   "scripts": {
+  "type":"module",
+  "scripts": {
     "build": "webpack --mode=production --node-env=production",
     "test": "echo \"Error: no test!\" && exit 1",
     "watch": "webpack --watch",

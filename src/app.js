@@ -55,8 +55,8 @@ const app = (i18) => {
         });
         state.feeds.push(feed);
         state.posts.push(...addIdtoPosts);
-        e.target.url.value = '';
         state.urlForm.status = 'success';
+        elements.mainFormUrlInput.value = '';
       })
       .catch((error) => {
         console.log('startdebug*******');

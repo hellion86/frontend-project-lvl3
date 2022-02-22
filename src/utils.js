@@ -1,7 +1,7 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 import _ from 'lodash';
-import * as axios from 'axios';
+import { get } from 'axios';
 
 export const parserRss = (data) => {
   const parser = new DOMParser();
@@ -34,7 +34,7 @@ export const loadUrl = (link) => {
   mainUrl.searchParams.append('charset', 'utf-8');
   mainUrl.searchParams.append('url', link);
   return new Promise((resolve, reject) => {
-    const flow = axios.get(mainUrl);
+    const flow = get(mainUrl);
     flow.then((data) => resolve(data)).catch((err) => reject(err));
   });
 };

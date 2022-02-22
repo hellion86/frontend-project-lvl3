@@ -12,7 +12,6 @@ export const parserRss = (data) => {
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
-      url: data.data.status.url,
     };
     const dataFromFlow = dataFromUrl.querySelectorAll('item');
     const posts = Array.from(dataFromFlow).map((item) => (

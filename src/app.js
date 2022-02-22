@@ -67,7 +67,7 @@ const app = (i18) => {
         state.urlForm.errors = error.message;
       });
   });
-  // updateRss(state);
+  updateRss(state);
 };
 
 const runApp = () => {

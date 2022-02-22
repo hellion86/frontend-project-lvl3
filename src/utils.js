@@ -27,18 +27,17 @@ export const parserRss = (data) => {
   }
 };
 
-export const loadUrl = (link) => {
-  const mainUrl = new URL('/get?', 'https://hexlet-allorigins.herokuapp.com');
-  mainUrl.searchParams.append('disableCache', true);
-  mainUrl.searchParams.append('charset', 'utf-8');
-  mainUrl.searchParams.append('url', link);
-  console.log('!!!error here!!!');
-  console.log(link);
-  return new Promise((resolve, reject) => {
-    const flow = axios.get(mainUrl);
-    flow.then((data) => resolve(data)).catch((err) => reject(err));
-  });
-};
+export const loadUrl = (link) => axios.get(`https://hexlet-allorigins.herokuapp.com/get?disableCache=true&url=${encodeURIComponent(link)}`);
+//  {
+//   const mainUrl = new URL('/get?', 'https://hexlet-allorigins.herokuapp.com');
+//   mainUrl.searchParams.append('disableCache', true);
+//   mainUrl.searchParams.append('charset', 'utf-8');
+//   mainUrl.searchParams.append('url', link);
+//   return new Promise((resolve, reject) => {
+//     const flow = axios.get(mainUrl);
+//     flow.then((data) => resolve(data)).catch((err) => reject(err));
+//   });
+// };
 
 export const addListenerForModal = (state, elements) => {
   const postsContainer = document.querySelector('.posts');

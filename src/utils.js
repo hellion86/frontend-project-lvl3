@@ -70,6 +70,5 @@ export const updateRss = (state) => {
       });
       state.posts.push(...addIdtodiff);
     }
-  })
-  .then(() => setTimeout(() => updateRss(state), 5000));
+  }).then(() => setTimeout(() => updateRss(state), 5000));
 };

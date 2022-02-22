@@ -1,10 +1,9 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
-import { setLocale } from 'yup';
 import _ from 'lodash';
 
 export const validateUrl = (urlForm) => {
-  setLocale({
+  yup.setLocale({
     string: {
       url: 'urlError',
     },

@@ -25,7 +25,7 @@ export const handleErrors = (elements, value, i18) => {
 };
 
 const cleanForm = (elements, i18) => {
-  // elements.mainForm.reset();
+  elements.mainFormUrlInput.value = '';
   elements.mainFormUrlInput.focus();
   elements.errorPlace.textContent = i18.t('urlLoadSuccess');
   elements.errorPlace.classList.add('text-success');

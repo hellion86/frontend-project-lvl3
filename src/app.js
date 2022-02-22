@@ -56,12 +56,8 @@ const app = (i18) => {
         state.feeds.push(feed);
         state.posts.push(...addIdtoPosts);
         state.urlForm.status = 'success';
-        elements.mainFormUrlInput.value = '';
       })
       .catch((error) => {
-        console.log('startdebug*******');
-        console.log(error);
-        console.log('enddebug*******');
         state.urlForm.status = 'error';
         state.urlForm.errors = error.message;
       });

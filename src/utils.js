@@ -58,18 +58,18 @@ export const addListenerForModal = (state, elements) => {
 
 export const updateRss = (state) => {
   const loadAll = Promise.all(state.urlForm.loadedUrl.map((link) => loadUrl(link)));
-    loadAll.then((data) => {
-      const parsedData = data.map((flow) => parserRss(flow));
-      const takePosts = parsedData.map((item) => item[1]);
-      const diff = _.differenceBy(_.concat(...takePosts), state.posts, 'title');
-      if (diff.length > 0) {
-        const addIdtodiff = diff.map((item) => ({ ...item, id: _.uniqueId() }));
-        const [postsState] = state.posts;
-        addIdtodiff.forEach((post) => {
-          postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
-        });
-        state.posts.push(...addIdtodiff);
-      }
-    })
-    .then(() => setTimeout(() => updateRss(state), 5000));
+  loadAll.then((data) => {
+    const parsedData = data.map((flow) => parserRss(flow));
+    const takePosts = parsedData.map((item) => item[1]);
+    const diff = _.differenceBy(_.concat(...takePosts), state.posts, 'title');
+    if (diff.length > 0) {
+      const addIdtodiff = diff.map((item) => ({ ...item, id: _.uniqueId() }));
+      const [postsState] = state.posts;
+      addIdtodiff.forEach((post) => {
+        postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
+      });
+      state.posts.push(...addIdtodiff);
+    }
+  })
+  .then(() => setTimeout(() => updateRss(state), 5000));
 };

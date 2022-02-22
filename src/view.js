@@ -1,7 +1,7 @@
 /* eslint-disable no-param-reassign */
 import * as yup from 'yup';
 import { setLocale } from 'yup';
-import { find } from 'lodash';
+import _ from 'lodash';
 
 export const validateUrl = (urlForm) => {
   setLocale({
@@ -42,7 +42,7 @@ export const showPosts = (elements, value, i18) => {
     const li = document.createElement('li');
     li.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-start', 'border-0', 'border-end-0');
     const href = document.createElement('a');
-    const getPostUiState = find(postsState.uiState, ['id', post.id]);
+    const getPostUiState = _.find(postsState.uiState, ['id', post.id]);
     const typeTextPost = getPostUiState.typeOfName;
     href.classList.add(typeTextPost);
     href.setAttribute('data-id', `${post.id}`);

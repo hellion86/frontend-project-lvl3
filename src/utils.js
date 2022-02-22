@@ -1,8 +1,6 @@
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
-import {
-  find, differenceBy, concat, uniqueId,
-} from 'lodash';
+import _ from 'lodash';
 import * as axios from 'axios';
 
 export const parserRss = (data) => {
@@ -47,8 +45,8 @@ export const addListenerForModal = (state, elements) => {
     const [postsState] = state.posts;
     const postId = item.target.getAttribute('data-id');
     const postOnPage = postsContainer.querySelector(`[data-id="${postId}"]`);
-    const postDataFromState = find(state.posts, ['id', postId]);
-    const postUiState = find(postsState.uiState, ['id', postId]);
+    const postDataFromState = _.find(state.posts, ['id', postId]);
+    const postUiState = _.find(postsState.uiState, ['id', postId]);
     postUiState.typeOfName = 'fw-normal';
     if (postId) {
       postOnPage.classList.replace('fw-bold', 'fw-normal');
@@ -64,9 +62,9 @@ export const updateRss = (state) => {
     loadAll.then((data) => {
       const parsedData = data.map((flow) => parserRss(flow));
       const takePosts = parsedData.map((item) => item[1]);
-      const diff = differenceBy(concat(...takePosts), state.posts, 'title');
+      const diff = _.differenceBy(_.concat(...takePosts), state.posts, 'title');
       if (diff.length > 0) {
-        const addIdtodiff = diff.map((item) => ({ ...item, id: uniqueId() }));
+        const addIdtodiff = diff.map((item) => ({ ...item, id: _.uniqueId() }));
         const [postsState] = state.posts;
         addIdtodiff.forEach((post) => {
           postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
@@ -74,5 +72,9 @@ export const updateRss = (state) => {
         state.posts.push(...addIdtodiff);
       }
     })
-    .then(() => setTimeout(() => updateRss(state), 5000));
+    .then(() => setTimeout(() => updateRss(state), 5000))
+    .catch((error) => {
+      state.urlForm.status = 'error';
+      state.urlForm.errors = error.message;
+    });
 };

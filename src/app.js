@@ -60,11 +60,14 @@ const app = (i18) => {
         state.urlForm.status = 'success';
       })
       .catch((error) => {
+        console.log('start debug !!!!!');
+        console.log(error);
+        console.log('end debug!!!!!');
         state.urlForm.status = 'error';
         state.urlForm.errors = error.message;
       });
   });
-  updateRss(state);
+  // updateRss(state);
 };
 
 const runApp = () => {

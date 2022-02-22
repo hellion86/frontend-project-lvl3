@@ -2,7 +2,7 @@
 // import 'bootstrap/dist/js/bootstrap.bundle.min.js';
 import onChange from 'on-change';
 import i18n from 'i18next';
-import { uniqueId } from 'lodash';
+import _ from 'lodash';
 import {
   render, validateUrl,
 } from './view.js';
@@ -51,7 +51,7 @@ const app = (i18) => {
         const [feed, posts] = parserRss(rss);
         const [postsState] = state.posts;
         state.urlForm.loadedUrl.push(state.urlForm.url);
-        const addIdtoPosts = posts.map((item) => ({ ...item, id: uniqueId() }));
+        const addIdtoPosts = posts.map((item) => ({ ...item, id: _.uniqueId() }));
         addIdtoPosts.forEach((post) => {
           postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
         });

@@ -32,6 +32,9 @@ const app = (i18) => {
       url: '',
       errors: '',
     },
+    modalForm: {
+      postData: [],
+    },
     feeds: [],
     posts: [{ uiState: [] }],
   }, render(elements, i18));
@@ -47,12 +50,8 @@ const app = (i18) => {
       .then((data) => loadUrl(data.url))
       .then((rss) => {
         const [feed, posts] = parserRss(rss);
-        const [postsState] = state.posts;
         state.urlForm.loadedUrl.push(state.urlForm.url);
         const addIdtoPosts = posts.map((item) => ({ ...item, id: _.uniqueId() }));
-        addIdtoPosts.forEach((post) => {
-          postsState.uiState.push({ id: post.id, typeOfName: 'fw-bold' });
-        });
         state.feeds.push(feed);
         state.posts.push(...addIdtoPosts);
         state.urlForm.status = 'success';

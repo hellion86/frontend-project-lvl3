@@ -17,12 +17,9 @@ const app = (i18) => {
     addFeedButton: document.querySelector('[aria-label="add"]'),
     postsPlace: document.querySelector('.posts'),
     feedsPlace: document.querySelector('.feeds'),
-    modalForm: document.querySelector('#modal'),
     modalTitle: document.querySelector('.modal-title'),
     modalBody: document.querySelector('.modal-body'),
     modalReadButton: document.querySelector('[role="button"]'),
-    modalCloseButton: document.querySelectorAll('[data-bs-dismiss="modal"]'),
-    body: document.querySelector('body'),
   };
 
   const state = onChange({
@@ -58,7 +55,6 @@ const app = (i18) => {
       })
       .catch((error) => {
         state.urlForm.status = 'error';
-        console.log(error.message);
         state.urlForm.errors = error.message;
       });
   });

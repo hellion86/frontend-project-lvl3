@@ -1,10 +1,9 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
+// eslint-disable-next-line import/no-import-module-exports
+import HtmlWebpackPlugin from 'html-webpack-plugin';
 
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-
-const isProduction = process.env.NODE_ENV === 'production';
-
-const config = {
+export default {
+  mode: process.env.NODE_ENV || 'development',
   entry: './src/index.js',
   plugins: [
     new HtmlWebpackPlugin({
@@ -36,13 +35,4 @@ const config = {
       },
     ],
   },
-};
-
-module.exports = () => {
-  if (isProduction) {
-    config.mode = 'production';
-  } else {
-    config.mode = 'development';
-  }
-  return config;
 };

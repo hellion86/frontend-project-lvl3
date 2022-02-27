@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-param-reassign */
 import _ from 'lodash';
@@ -6,16 +7,14 @@ import axios from 'axios';
 export const parserRss = (loadData) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(loadData.data.contents, 'text/xml');
-  if (dataFromUrl.querySelector('parsererror')) {
-    // const errorCode = loadData.data.status.http_code ? loadData.data.status.http_code : 404;
-    throw new Error(`badRss.${404}`);
-  } else {
+  const errorsOnPage = dataFromUrl.querySelector('parsererror');
+  if (!errorsOnPage) {
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
     };
-    const dataFromFlow = dataFromUrl.querySelectorAll('item');
-    const posts = Array.from(dataFromFlow).map((item) => (
+    const postsData = dataFromUrl.querySelectorAll('item');
+    const posts = Array.from(postsData).map((item) => (
       {
         title: item.querySelector('title').textContent,
         description: item.querySelector('description').textContent,
@@ -24,6 +23,7 @@ export const parserRss = (loadData) => {
     ));
     return [feed, posts];
   }
+  if (errorsOnPage.textContent.includes('xmlParseEntityRef')) throw new Error('badRss.xmlParseEntityRef');
 };
 
 export const loadUrl = (link) => {

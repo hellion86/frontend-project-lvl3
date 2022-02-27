@@ -4,8 +4,7 @@ export default {
     urlExist: 'RSS уже существует',
     urlLoadSuccess: 'RSS успешно загружен',
     badRss: {
-      404: 'Ресурс не содержит валидный RSS',
-      200: 'Ресурс не содержит валидный RSS',
+      xmlParseEntityRef: 'Ресурс не содержит валидный RSS',
     },
     'Network Error': 'Ошибка сети',
     posts: {

@@ -7,8 +7,8 @@ export const parserRss = (loadData) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(loadData.data.contents, 'text/xml');
   if (dataFromUrl.querySelector('parsererror')) {
-    const errorCode = loadData.data.status.http_code ? loadData.data.status.http_code : 404;
-    throw new Error(`badRss.${errorCode}`);
+    // const errorCode = loadData.data.status.http_code ? loadData.data.status.http_code : 404;
+    throw new Error(`badRss.${404}`);
   } else {
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,

@@ -17,12 +17,7 @@ export const validateUrl = (urlForm) => {
 };
 
 export const handleErrors = (elements, value, i18) => {
-
-  console.log('start debug!!!!!');
-    console.log(value);
-    // console.log(errorCode);
-    console.log('end debugin!');
-  elements.errorPlace.textContent = i18.t(value);
+  elements.errorPlace.textContent = i18.t(`${value}`);
   elements.errorPlace.classList.add('text-danger');
   elements.mainFormUrlInput.classList.add('is-invalid');
   elements.errorPlace.classList.remove('text-success');

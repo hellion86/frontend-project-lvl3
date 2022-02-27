@@ -45,9 +45,6 @@ const app = (i18) => {
     e.preventDefault();
     const formData = new FormData(e.target);
     state.urlForm.url = formData.get('url');
-    console.log('url checke start');
-    console.log(state.urlForm.url);
-    console.log('url checker end');
     state.urlForm.status = 'loadUrl';
     validateUrl(state.urlForm)
       .then((data) => loadUrl(data.url))
@@ -61,6 +58,7 @@ const app = (i18) => {
       })
       .catch((error) => {
         state.urlForm.status = 'error';
+        console.log(error.message);
         state.urlForm.errors = error.message;
       });
   });

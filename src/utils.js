@@ -55,15 +55,15 @@ export const addListenerForModal = (state, elements) => {
 };
 
 export const updateRss = (state) => {
- Promise.all(state.urlForm.loadedUrl.map((link) => {
-   const handleEachFeed = loadUrl(link)
+  Promise.all(state.urlForm.loadedUrl.map((link) => {
+    const handleEachFeed = loadUrl(link)
       .then((data) => {
         const [, posts] = parserRss(data);
         const diff = _.differenceBy(posts, state.posts, 'title');
         const addIdtodiff = diff.map((item) => ({ ...item, id: _.uniqueId() }));
         state.posts.push(...addIdtodiff);
       });
-      return handleEachFeed;
+    return handleEachFeed;
   }));
   setTimeout(() => updateRss(state), 5000);
 };

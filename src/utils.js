@@ -8,7 +8,9 @@ export const parserRss = (loadData) => {
   const parser = new DOMParser();
   const dataFromUrl = parser.parseFromString(loadData.data.contents, 'text/xml');
   const errorsOnPage = dataFromUrl.querySelector('parsererror');
-  if (!errorsOnPage) {
+  if (errorsOnPage) {
+    if (errorsOnPage.textContent.includes('xmlParseEntityRef')) throw new Error('badRss.xmlParseEntityRef');
+  } else {
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,
       description: dataFromUrl.querySelector('description').textContent,
@@ -23,7 +25,6 @@ export const parserRss = (loadData) => {
     ));
     return [feed, posts];
   }
-  if (errorsOnPage.textContent.includes('xmlParseEntityRef')) throw new Error('badRss.xmlParseEntityRef');
 };
 
 export const loadUrl = (link) => {

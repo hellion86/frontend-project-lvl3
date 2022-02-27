@@ -9,7 +9,7 @@ export const parserRss = (loadData) => {
   const dataFromUrl = parser.parseFromString(loadData.data.contents, 'text/xml');
   const errorsOnPage = dataFromUrl.querySelector('parsererror');
   if (errorsOnPage) {
-    if (errorsOnPage.textContent.includes('xmlParseEntityRef')) throw new Error('badRss.xmlParseEntityRef');
+    throw new Error('badRss.xmlParseEntityRef');
   } else {
     const feed = {
       title: dataFromUrl.querySelector('title').textContent,

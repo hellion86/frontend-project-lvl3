@@ -1,12 +1,8 @@
 import onChange from 'on-change';
 import i18n from 'i18next';
-import _ from 'lodash';
-import {
-  render, validateUrl,
-} from './view.js';
-import {
-  loadUrl, updateRss, parserRss, addListenerForModal,
-} from './utils.js';
+import { render } from './view.js';
+import { updateRss } from './utils.js';
+import { mainListener, modalListener } from './controllers.js';
 import ru from './locales/ru.js';
 
 const app = (i18) => {
@@ -36,28 +32,8 @@ const app = (i18) => {
     posts: [{ uiState: [] }],
   }, render(elements, i18));
 
-  addListenerForModal(state, elements);
-
-  elements.mainForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(e.target);
-    state.urlForm.url = formData.get('url');
-    state.urlForm.status = 'loadUrl';
-    validateUrl(state.urlForm)
-      .then((data) => loadUrl(data.url))
-      .then((rss) => {
-        const [feed, posts] = parserRss(rss);
-        state.urlForm.loadedUrl.push(state.urlForm.url);
-        const addIdtoPosts = posts.map((item) => ({ ...item, id: _.uniqueId() }));
-        state.feeds.push(feed);
-        state.posts.push(...addIdtoPosts);
-        state.urlForm.status = 'success';
-      })
-      .catch((error) => {
-        state.urlForm.status = 'error';
-        state.urlForm.errors = error.message;
-      });
-  });
+  mainListener(state, elements);
+  modalListener(state, elements);
   updateRss(state);
 };
 

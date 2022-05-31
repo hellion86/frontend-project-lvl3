@@ -6,7 +6,7 @@ import axios from 'axios';
 import parserRss from './parser.js';
 
 export const loadUrl = (link) => {
-  const mainUrl = new URL('/get?', 'https://hexlet-allorigins.herokuapp.com');
+  const mainUrl = new URL('/get?', 'https://allorigins.hexlet.app');
   mainUrl.searchParams.append('disableCache', true);
   mainUrl.searchParams.append('charset', 'utf-8');
   mainUrl.searchParams.append('url', link);

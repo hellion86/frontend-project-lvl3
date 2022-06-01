@@ -6,6 +6,8 @@ publish:
 	npm publish --dry-run
 lint:
 	npx eslint .
+start:
+	npm run serve
 test:
 	npm test
 test-coverage:

@@ -3,15 +3,27 @@
 [![Maintainability](https://api.codeclimate.com/v1/badges/3414bb74acd4e63ae159/maintainability)](https://codeclimate.com/github/hellion86/frontend-project-lvl3/maintainability)
 [![Node CI](https://github.com/hellion86/frontend-project-lvl3/workflows/linter-test/badge.svg)](https://github.com/hellion86/frontend-project-lvl3/actions)
 
-RSS-агрегатор, для вашего удобства чтения блогов, новстей...
+### Description
+:scroll:RSS agregator - a service for aggregating RSS feeds, with which it is convenient to read a variety of sources, such as blogs. It allows you to 
+add an unlimited number of RSS feeds, updates them itself and adds new entries to the general feed.
 
-## Запуск проекта локально
+### 1. install dependencies:
+```
+$ make install
+```
 
- ```bash
- make install
- npm run serve
- ```
+### 2. Start project:
 
-  
+```
+$ make start
+```
+App will start on localhost:8080
 
-[Link to rss reader](https://rsshexlet.vercel.app/)
+
+### Using
+* Webpack
+* Bootsrap
+* Promises
+* Events, DOM
+* Validation (yup), DOMParser 
+* Deploy [vercel](https://rsshexlet.vercel.app/)

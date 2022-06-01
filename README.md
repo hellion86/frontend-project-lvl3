@@ -7,7 +7,7 @@
 :scroll:RSS agregator - a service for aggregating RSS feeds, with which it is convenient to read a variety of sources, such as blogs. It allows you to 
 add an unlimited number of RSS feeds, updates them itself and adds new entries to the general feed.
 
-### 1. install dependencies:
+### 1. Install dependencies:
 ```
 $ make install
 ```
@@ -25,5 +25,6 @@ App will start on localhost:8080
 * Bootsrap
 * Promises
 * Events, DOM
+* i18next
 * Validation (yup), DOMParser 
 * Deploy [vercel](https://rsshexlet.vercel.app/)
